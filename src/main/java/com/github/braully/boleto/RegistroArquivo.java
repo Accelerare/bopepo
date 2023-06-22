@@ -29,11 +29,12 @@ import static com.github.braully.boleto.TagLayout.TagCreator.fsequencialRegistro
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jrimum.texgit.FixedField;
 import org.jrimum.texgit.IFiller;
 import org.jrimum.texgit.Record;
-import org.jrimum.utilix.Objects;
 
 /**
  *
@@ -43,6 +44,8 @@ public class RegistroArquivo extends Record {
 
     protected TagLayout layoutRegistro;
     protected List<FixedField> extraIds;
+
+
 
     public RegistroArquivo() {
     }
@@ -98,7 +101,24 @@ public class RegistroArquivo extends Record {
         return getValue(fcedenteCnpj().nome);
     }
 
-    public RegistroArquivo convenio(String convenio, String agencia, String conta, String dac) {
+    public RegistroArquivo convenio(String codigoBanco, String convenio, String agencia, String conta, String dac) {
+
+        //o DAC da conta cedente, que é a posição 72 do header do arquivo e header do lote
+        //o itau é o unico que funciona diferente do resto...
+
+        //normalmente é AGENCIA-DIGITO CONTA-DIGITO espaço e razao social do cedente
+        //o itau é AGENCIA-DIGITO CONTA-SEM_DIGITO ESPACO e aí sim na posicao 72 o DIGITO DA AGENCIA
+        //EXEMPLO AGENCIA 0123-1 e CONTA 0000123-2
+        //qualquer banco -> 0012310000000001232 ACME S.A LTDA.
+        //itau deve ficar ->001231000000000123 2ACME S.A LTDA.
+
+        if (Objects.equals(codigoBanco,"341")) {
+            System.out.println("Utiliza digito da conta no campo DAC");
+
+            dac = StringUtils.right(conta, 1);
+            conta = StringUtils.left(conta, conta.length() - 1) + " ";
+        }
+
 
         this.convenio(convenio)
         .agencia(agencia)
@@ -107,7 +127,27 @@ public class RegistroArquivo extends Record {
         return this;
     }
 
-    public RegistroArquivo convenio(String convenio, String carteira, String agencia, String conta, String dac) {
+    public RegistroArquivo convenio(String codigoBanco, String convenio, String carteira, String agencia, String conta, String dac) {
+      
+      
+        //o DAC da conta cedente, que é a posição 72 do header do arquivo e header do lote
+        //o itau é o unico que funciona diferente do resto...
+
+        //normalmente é AGENCIA-DIGITO CONTA-DIGITO espaço e razao social do cedente
+        //o itau é AGENCIA-DIGITO CONTA-SEM_DIGITO ESPACO e aí sim na posicao 72 o DIGITO DA AGENCIA
+        //EXEMPLO AGENCIA 0123-1 e CONTA 0000123-2
+        //qualquer banco -> 0012310000000001232 ACME S.A LTDA.
+        //itau deve ficar ->001231000000000123 2ACME S.A LTDA.
+
+        if (Objects.equals(codigoBanco,"341")) {
+            System.out.println("Utiliza digito da conta no campo DAC");
+
+            dac = StringUtils.right(conta, 1);
+            conta = StringUtils.left(conta, conta.length() - 1) + " ";
+        }
+
+
+
         this.convenio(convenio).carteira(carteira).agencia(agencia).conta(conta).dac(dac);
         return this;
     }
@@ -260,23 +300,23 @@ public class RegistroArquivo extends Record {
             fixedField.setValue(value);
         }
         Integer len = l.getInt("length");
-        if (Objects.isNotNull(len)) {
+        if (Objects.nonNull(len)) {
             fixedField.setFixedLength(len);
         } else if ("field".equals(l.nome)) {
             throw new IllegalArgumentException("Field " + l + " sem comprimento (lenght) ");
         }
         Format format = (Format) l.getObj("format");
-        if (Objects.isNotNull(format)) {
+        if (Objects.nonNull(format)) {
             fixedField.setFormatter(format);
         }
         IFiller filler = (IFiller) l.getObj("filler");
-        if (Objects.isNotNull(filler)) {
+        if (Objects.nonNull(filler)) {
             fixedField.setFiller(filler);
             fixedField.setBlankAccepted(true);
             fixedField.setValue("");
         }
         filler = (IFiller) l.getObj("padding");
-        if (Objects.isNotNull(filler)) {
+        if (Objects.nonNull(filler)) {
             fixedField.setFiller(filler);
         }
         if (l.isAttr("truncate")) {

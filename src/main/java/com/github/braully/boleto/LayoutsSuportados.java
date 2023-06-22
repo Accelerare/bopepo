@@ -819,7 +819,7 @@ public class LayoutsSuportados {
 					fdataGeracao(),
 					field("horaGeracao").length(6).format(new SimpleDateFormat("hhmmss")),
 					fsequencialArquivo().length(6),
-					field("versaoLayoutArquivo").valLen("###"),
+					field("versaoLayoutArquivo").valLen("103"),
 					field("densidadeArquivo").value(0).length(5).filler(Fillers.ZERO_LEFT),
 					fbranco().length(20),
 					fbranco().length(20),
@@ -834,7 +834,7 @@ public class LayoutsSuportados {
 					fservico().length(2).value(20),
 					// 01 = credito em conta 03 = Transferência para outros bancos (DOC/TED)
 					fforma().length(2),
-					field("versaoLayoutLote").length(3).value("###"),
+					field("versaoLayoutLote").length(3).value("046"),
 					fbranco().length(1),
 					ftipoInscricao().length(1).value("2"),
 					fcedenteCnpj().length(14).filler(Fillers.ZERO_LEFT),
@@ -957,7 +957,6 @@ public class LayoutsSuportados {
 		TagLayout cabecalho = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(cabecalho());
 		cabecalho.get(campoBancoNome).value("BANCO ITAU SA");
 		cabecalho.get(campoBancoCodigo).value(codigoBanco);
-
 		cabecalho.get("versaoLayoutArquivo").value("080");
 
 		// cabecalhoLote
@@ -965,6 +964,12 @@ public class LayoutsSuportados {
 		cabecalhoLote.get(campoBancoCodigo).value(codigoBanco);
 		cabecalhoLote.get("versaoLayoutLote").value("040");
 
+		//INCLUINDO O DAC no lote de cabecalho  - no layout do itau precisa colocar o dac no cabealho do lote também. Não só no cabecalho do arquivo.
+		cabecalhoLote.filhos.remove(13);
+		cabecalhoLote.insertAfter(cabecalho.get("conta"), fdac());
+
+
+		
 		// SegmentoA
 		TagLayout segmentoA = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
 		segmentoA.get(campoBancoCodigo).value(codigoBanco);
@@ -1008,7 +1013,7 @@ public class LayoutsSuportados {
 		cabecalho.get("versaoLayoutArquivo").value("089");
 		
 		/*
-		* o bradesco utiliza apenas 6 charas para o codigo do convenio.. preencher à esquerda e deixar espaco em branco a direita 
+		* o bradesco utiliza apenas 6 chars para o codigo do convenio.. preencher à esquerda e deixar espaco em branco a direita 
 		*/
 		cabecalho.get("convenio").padding(Fillers.WHITE_SPACE_RIGHT);
 

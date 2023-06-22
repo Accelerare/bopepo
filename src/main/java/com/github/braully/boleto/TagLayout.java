@@ -20,13 +20,17 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.jrimum.domkee.banco.IBanco;
 import org.jrimum.texgit.Fillers;
@@ -67,6 +71,101 @@ public class TagLayout implements Serializable {
 
 	}
 
+	private String getUrlBanco() {
+
+		try {
+			TagLayout tagLayout = null;
+
+			if (this.getNome().equals("layout")) {
+				tagLayout = this;
+			} else {
+				tagLayout = this.get("layout");
+			}
+
+			if (tagLayout != null) {
+				TagLayout tagUrl = tagLayout.get("url");
+
+				if (tagUrl != null) {
+
+					return ((String) tagUrl.value);
+				}
+			}
+		} catch (Exception e) {
+			return null;
+		}
+
+		return null;
+
+	}
+
+	public String getNomeDoArquivo() {
+
+		// hcosta: cada banco tem uma regra de nome de arquivo de remessa
+		// alguns usam extensao .rem, outros .txt. alguns quando estão em fase de teste
+		// usam extensão .tst
+
+		// ITAU
+		// Nome do arquivo: O nome do arquivo pode ter no máximo 8 chars e não pode
+		// conter simbolos especiais.
+
+		// BRADESCO
+		// Nome dos Arquivos-Remessa / Retorno
+		// Bradesco Net Empresa/WebTA: o arquivo-remessa deverá ter a seguinte
+		// formatação:
+		// CBDDMM??.REM
+		// CB: Cobrança Bradesco;
+		// DD: o dia de geração do arquivo;
+		// MM: o mês da geração do arquivo;
+		// ??: variáveis alfanumérico-numéricas;
+		// Ex.: 01, AB, A1 etc.
+		// .Rem: extensão do arquivo.
+		// Exemplo: CB010501.REM ou CB0105AB.REM ou CB0105A1.REM.
+		// Nota: quando se tratar de arquivo-remessa para teste, a extensão deverá ser
+		// TST.
+		// Exemplo: CB010501.TST, o retorno será disponibilizado como CB010501.RST.
+		// Nota: no mesmo dia, não poderão ser transmitidos arquivos-remessa diferentes
+		// com nomes iguais. A
+		// variável no nome do arquivo serve para diferenciar um do outro.
+
+		// SANTANDER e BB NAO TEM REGRA
+
+		SimpleDateFormat sdf = new SimpleDateFormat("ddMM");
+		sdf.setCalendar(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")));
+
+		Date hoje = new Date();
+
+		sdf.format(hoje);
+
+		String urlBanco = getUrlBanco();
+
+		if (urlBanco != null) {
+			// if (urlBanco.contains("bb.com.br")) {
+			// return null;
+			// }
+
+			// if (urlBanco.contains("santander")) {
+			// return null;
+			// }
+
+			if (urlBanco.contains("itau.com.br")) {
+
+				Random random = new Random();
+
+				return String.format("%s%04d.txt", sdf.format(hoje), random.nextInt(9999));
+
+			}
+
+			if (urlBanco.contains("bradesco")) {
+
+				return String.format("CB%s%s.REM", sdf.format(hoje), RandomStringUtils.randomAlphanumeric(2));
+
+			}
+
+		}
+
+		return null;
+
+	}
 
 	public boolean isExigeNumeroDocumento() {
 
@@ -96,7 +195,6 @@ public class TagLayout implements Serializable {
 		return false;
 
 	}
-
 
 	boolean isAttr(String id) {
 		return is(this.atributos.get(id));

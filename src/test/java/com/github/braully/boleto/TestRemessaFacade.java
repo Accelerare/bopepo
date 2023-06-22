@@ -57,7 +57,7 @@ public class TestRemessaFacade {
         remessa.addNovoCabecalho()
                 .sequencialArquivo(1)
                 .dataGeracao(new Date()).setVal("horaGeracao", new Date())
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoCabecalhoLote()
                 .operacao("R")//Operação de remessa
@@ -65,7 +65,7 @@ public class TestRemessaFacade {
                 .forma(1)//Crédito em Conta Corrente
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1");
+                .convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoDetalheSegmentoP()
                 .valor(1)
@@ -76,27 +76,27 @@ public class TestRemessaFacade {
                 .nossoNumero(1)
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(1);
 
         remessa.addNovoDetalheSegmentoQ()
                 .sacado("Fulano de Tal", "0")
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(2);
 
         remessa.addNovoRodapeLote()
                 .quantidadeRegistros(2)
                 .valorTotalRegistros(1)
                 .banco("0", "Banco")
-                .cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
                 .valorTotalRegistros(1)
                 .setVal("codigoRetorno", "1")
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         String remessaStr = remessa.render();
         System.err.println(remessaStr);
@@ -109,7 +109,7 @@ public class TestRemessaFacade {
                 .sequencialArquivo(1)
                 .dataGeracao(new Date()).setVal("horaGeracao", new Date())
                 .banco("0", "Banco").cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .carteira("00");
 
         remessa.addNovoCabecalhoLote()
@@ -118,7 +118,7 @@ public class TestRemessaFacade {
                 .forma(1)//Crédito em Conta Corrente
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .carteira("00");;
 
         remessa.addNovoDetalheSegmentoP()
@@ -130,7 +130,7 @@ public class TestRemessaFacade {
                 .nossoNumero(1)
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(1)
                 .carteira("00");
 
@@ -138,7 +138,7 @@ public class TestRemessaFacade {
                 .sacado("Fulano de Tal", "0")
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(2)
                 .carteira("00");;
 
@@ -147,7 +147,7 @@ public class TestRemessaFacade {
                 .valorTotalRegistros(1)
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .carteira("00");;
 
         remessa.addNovoRodape()
@@ -155,7 +155,7 @@ public class TestRemessaFacade {
                 .valorTotalRegistros(1)
                 .setVal("codigoRetorno", "1")
                 .banco("0", "Banco").cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1")
+                .convenio(null,"1", "1", "1", "1")
                 .carteira("00");
 
         String remessaStr = remessa.render();
@@ -169,7 +169,7 @@ public class TestRemessaFacade {
         remessa.addNovoCabecalho()
                 .sequencialArquivo(1)
                 .dataGeracao(new Date()).setVal("horaGeracao", new Date())
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoCabecalhoLote()
                 .operacao("R")//Operação de remessa
@@ -177,7 +177,7 @@ public class TestRemessaFacade {
                 .forma(1)//Crédito em Conta Corrente
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1");
+                .convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoDetalheSegmentoJ()
                 .sacado("Fulano de Tal", "0")
@@ -187,25 +187,25 @@ public class TestRemessaFacade {
                 .dataVencimento(new Date())
                 .numeroDocumento(1)
                 .nossoNumero(1)
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1")
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(1);
 
         remessa.addNovoDetalheSegmentoJ52()
                 .sacado("Fulano de Tal", "0")
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1")
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(2);
 
         remessa.addNovoRodapeLote()
                 .quantidadeRegistros(2)
                 .valorTotalRegistros(1)
                 .banco("0", "Banco")
-                .cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
                 .valorTotalRegistros(1)
                 .setVal("codigoRetorno", "1")
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         String remessaStr = remessa.render();
         System.err.println(remessaStr);
@@ -219,7 +219,7 @@ public class TestRemessaFacade {
         remessa.addNovoCabecalho()
                 .sequencialArquivo(1)
                 .dataGeracao(new Date()).setVal("horaGeracao", new Date())
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoCabecalhoLote()
                 .operacao("R")//Operação de remessa
@@ -227,7 +227,7 @@ public class TestRemessaFacade {
                 .forma(1)//Crédito em Conta Corrente
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
-                .convenio("1", "1", "1", "1");
+                .convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoDetalheSegmentoJ()
                 .sacado("Fulano de Tal", "0")
@@ -237,25 +237,25 @@ public class TestRemessaFacade {
                 .dataVencimento(new Date())
                 .numeroDocumento(1)
                 .nossoNumero(1)
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1")
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(1);
 
         remessa.addNovoDetalheSegmentoJ52()
                 .sacado("Fulano de Tal", "0")
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1")
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1")
                 .sequencialRegistro(2);
 
         remessa.addNovoRodapeLote()
                 .quantidadeRegistros(2)
                 .valorTotalRegistros(1)
                 .banco("0", "Banco")
-                .cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
                 .valorTotalRegistros(1)
                 .setVal("codigoRetorno", "1")
-                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio("1", "1", "1", "1");
+                .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         String remessaStr = remessa.render();
         System.err.println(remessaStr);
@@ -302,7 +302,10 @@ public class TestRemessaFacade {
 
 	@Test
 	public void testRemessaPagamentoSantander240() {
-		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa("033"));
+
+                String codigoBanco = "033";
+
+		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa(codigoBanco));
 
 		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
 
@@ -322,11 +325,11 @@ public class TestRemessaFacade {
 		.horaGeracao(new Date())
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC);
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
 
 		remessa.addNovoCabecalhoLote()
 				.forma(1)// 1 = Crédito em Conta Corrente mesmo banco 3 = doc/ted outro banco
-				.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+				.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 				.cedente(razaoSocial, cnpj)
 				.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
@@ -362,7 +365,7 @@ public class TestRemessaFacade {
 		.quantidadeRegistros(24)
 		.valorTotalRegistros(valorPagamento.toString())
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
 
 		if (remessa.isPermiteQtdeMoeda()) {
@@ -380,9 +383,14 @@ public class TestRemessaFacade {
 
 	@Test
 	public void testRemessaPagamentoBradesco240() {
-		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa("237"));
+
+                String codigoBanco = "237";
+
+		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa(codigoBanco));
 
 		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
+
+                System.out.println("remessa.nomeArquivo = " + remessa.getNomeDoArquivo());
 
 
 		String razaoSocial = "EMPRESA TESTE XYZ";
@@ -390,7 +398,7 @@ public class TestRemessaFacade {
 
 		String numeroConvenio = "555555";
 		
-                //testando preenchimento automatico do digito veriricador como 0
+                //testando preenchimento automatico do digito verificador como 0
 		String agenciaComDigito = "01110";
 		String contaComDigito = "0011111-1";
 		String DAC = " ";
@@ -404,11 +412,11 @@ public class TestRemessaFacade {
 		.horaGeracao(new Date())
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC);
+		.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC);
 
 		remessa.addNovoCabecalhoLote()
 				.forma(1)// 1 = Crédito em Conta Corrente mesmo banco 3 = doc/ted outro banco
-				.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+				.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 				.cedente(razaoSocial, cnpj)
 				.endereco("AV TESTE","111","","São Paulo","01104010", "SP");
 
@@ -448,7 +456,7 @@ public class TestRemessaFacade {
 		.quantidadeRegistros(24)
 		.valorTotalRegistros(valorPagamento.toString())
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
 
 		if (remessa.isPermiteQtdeMoeda()) {
@@ -464,9 +472,10 @@ public class TestRemessaFacade {
 		System.out.println(remessaStr);
 	}
 
-
 	@Test
 	public void testRemessaPagamentoBB240() {
+
+                String codigoBanco = "001";
 		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa("001"));
 
 		Assert.assertEquals(false, remessa.isPermiteQtdeMoeda());
@@ -486,11 +495,11 @@ public class TestRemessaFacade {
 		.horaGeracao(new Date())
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC);
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
 
 		remessa.addNovoCabecalhoLote()
 		.forma(1)// 1 = Crédito em Conta Corrente mesmo banco 3 = doc/ted outro banco
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.cedente(razaoSocial, cnpj)
 		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
@@ -532,7 +541,7 @@ public class TestRemessaFacade {
 		.quantidadeRegistros(24)
 		.valorTotalRegistros(valorPagamento.toString())
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
 
 		if (remessa.isPermiteQtdeMoeda()) {
@@ -549,9 +558,15 @@ public class TestRemessaFacade {
 
 	@Test
 	public void testRemessaPagamentoItau240() {
+                        
+                String codigoBanco = "341";
+
 		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa("341"));
 
 		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
+
+
+                System.out.println("remessa.nomeArquivo = " + remessa.getNomeDoArquivo());
 
 
 		String razaoSocial = "ACME S.A LTDA.";
@@ -559,7 +574,7 @@ public class TestRemessaFacade {
 
 		String numeroConvenio = "12345678";
 		String agenciaComDigito = "0123-1";
-		String contaComDigito = "0000123-1";
+		String contaComDigito = "00001232-3";
 		String DAC = " ";
 		int sequencialRegistro = 1;
                 String numeroDocumento = "";
@@ -569,11 +584,11 @@ public class TestRemessaFacade {
 		.horaGeracao(new Date())
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC);
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
 
 		remessa.addNovoCabecalhoLote()
 		.forma(1)// 1 = Crédito em Conta Corrente mesmo banco 3 = doc/ted outro banco
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.cedente(razaoSocial, cnpj)
 		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
@@ -615,7 +630,7 @@ public class TestRemessaFacade {
 		.quantidadeRegistros(24)
 		.valorTotalRegistros(valorPagamento.toString())
 		.cedente(razaoSocial, cnpj)
-		.convenio(numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
 
 		if (remessa.isPermiteQtdeMoeda()) {
@@ -631,6 +646,99 @@ public class TestRemessaFacade {
 	}
 
 
+	@Test
+	public void testRemessaPagamentoUnicred240() {
+                        
+                String codigoBanco = "136";
+
+		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa("136"));
+
+		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
+
+
+                System.out.println("remessa.nomeArquivo = " + remessa.getNomeDoArquivo());
+
+
+		String razaoSocial = "ACME S.A LTDA.";
+		String cnpj = "111.222.33.0001/44";
+
+		String numeroConvenio = "12345678";
+		String agenciaComDigito = "0123-1";
+		String contaComDigito = "00001232-3";
+		String DAC = " ";
+		int sequencialRegistro = 1;
+                String numeroDocumento = "";
+
+		remessa.addNovoCabecalho()
+		.dataGeracao(new Date())
+		.horaGeracao(new Date())                
+		.sequencialArquivo(22)
+		.cedente(razaoSocial, cnpj)
+                .banco("136","UNICRED")
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
+
+		remessa.addNovoCabecalhoLote()
+		.forma(1)// 1 = Crédito em Conta Corrente mesmo banco 3 = doc/ted outro banco
+                .banco("136","UNICRED")
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.cedente(razaoSocial, cnpj)
+		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
+
+
+		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+
+                if (remessa.isExigeNumeroDocumento()) {
+                        numeroDocumento = "123456";
+		}
+
+		remessa.addNovoDetalheSegmentoA()
+		.numeroDocumento(numeroDocumento)
+		.formaDeTransferencia("000")
+		.favorecidoCodigoBanco("341")
+		.favorecidoAgencia("1234-5")
+		.favorecidoConta("1234-5")
+		 //testando sanitize remover acentos e transformar em maiusculo
+		.favorecidoNome("José da Silva")
+		.dataPagamento(new Date())
+		.valor(valorPagamento)
+                .banco("136","UNICRED")
+		.sequencialRegistro(sequencialRegistro);
+
+		sequencialRegistro++;
+
+		remessa.addNovoDetalheSegmentoB()
+		.numeroDocumento(1)
+		.favorecidoTipoInscricao("1")
+		 //testando sanitize apenasNumeros
+		.favorecidoCPFCNPJ("111.222.33/4-----55")
+		.valor(valorPagamento.toString())
+                .banco("136","UNICRED")
+		.sequencialRegistro(sequencialRegistro)
+		.setValue("data",new Date())
+		.setValue("lote",1);
+
+		RodapeArquivo rodapeLote = remessa.addNovoRodapeLote();
+
+
+		rodapeLote
+		.quantidadeRegistros(24)
+		.valorTotalRegistros(valorPagamento.toString())
+		.cedente(razaoSocial, cnpj)
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+                .banco("136","UNICRED")
+		.setValue("lote",1);
+
+		if (remessa.isPermiteQtdeMoeda()) {
+			rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
+		}
+
+		remessa.addNovoRodape()
+		.quantidadeRegistros(18)                
+		.quantidadeLotes(1).banco("136","UNICRED");
+
+		String remessaStr = remessa.render();
+		System.out.println(remessaStr);
+	}
 
 
     public TagLayout layoutGenericoTest() {

@@ -30,6 +30,11 @@ public class RemessaFacade extends ArquivoFacade {
 		return this.template.isPermiteQtdeMoeda();
 	}
 
+    public String getNomeDoArquivo() {
+		return this.template.getNomeDoArquivo();
+	}
+
+
     public boolean isExigeNumeroDocumento() {
 		return this.template.isExigeNumeroDocumento();
 	}
