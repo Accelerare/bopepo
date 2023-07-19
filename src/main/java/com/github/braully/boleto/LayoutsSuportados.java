@@ -1028,23 +1028,17 @@ public class LayoutsSuportados {
 		segmentoA.insertAfter(segmentoA.get("outrasInfos"), field("numeroDocumentoRetorno").length(6).padding(Fillers.WHITE_SPACE_RIGHT).value("000000"));
 		segmentoA.insertAfter(segmentoA.get("numeroDocumentoRetorno"), segmentoB.get("favorecidoCPFCNPJ"));
 
-
-
-
-
-
 		// SegmentoB
 		segmentoB.get(campoBancoCodigo).value(codigoBanco);
 
 		//regra itau: posicao 63 -> numero do endereço não pode ser em branco... mudar pra 00000
-		//regra itau: posicao 63 -> cep    do endereço não pode ser em branco... mudar pra 00000000
-		segmentoB.filhos.remove(8); //endereco no template ele tem 95 chars, mas precisamos desmembrar em 30-5-50-8-2 chars para preencher 00000 no campo de 5 chars e 00000000 no campo de 8 chars
-		segmentoB.insertAfter(segmentoB.get("favorecidoCPFCNPJ"), field("endereco").length(30).padding(Fillers.WHITE_SPACE_RIGHT).value("                    "));
+		//regra itau: posicao 63 -> cep do endereço não pode ser em branco... mudar pra 00000000
+		segmentoB.filhos.remove(9); //endereco no template ele tem 95 chars, mas precisamos desmembrar em 30-5-50-8-2 chars para preencher 00000 no campo de 5 chars e 00000000 no campo de 8 chars
+		segmentoB.insertAfter(segmentoB.get("favorecidoCPFCNPJ"), field("endereco").length(30).padding(Fillers.WHITE_SPACE_RIGHT).value("                              "));
 		segmentoB.insertAfter(segmentoB.get("endereco"), field("numero").length(5).padding(Fillers.WHITE_SPACE_RIGHT).value("00000"));
 		segmentoB.insertAfter(segmentoB.get("numero"), field("complementoBairroCidade").length(50).padding(Fillers.WHITE_SPACE_RIGHT).value("                                                  "));
 		segmentoB.insertAfter(segmentoB.get("complementoBairroCidade"), field("cepEndereco").length(8).padding(Fillers.WHITE_SPACE_RIGHT).value("00000000"));
 		segmentoB.insertAfter(segmentoB.get("cepEndereco"), field("ufEndereco").length(2).padding(Fillers.WHITE_SPACE_RIGHT).value("  "));
-
 
 
 		// RodapeLote
