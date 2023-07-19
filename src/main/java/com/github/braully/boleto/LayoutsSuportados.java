@@ -62,7 +62,7 @@ public class LayoutsSuportados {
 					// Para os Bancos que se utilizam de duas posições para o Dígito Verificador
 					// do Número da Conta Corrente, preencher este campo com a 2ª posição deste
 					// dígito.
-					fdac(), fcedenteNome().length(30), fbancoNome().length(30),
+					fdac(), fcedenteNome().length(30), fbancoNome().length(30).truncate(true),
 					// Uso Exclusivo FEBRABAN / CNAB
 					fbranco().length(10),
 					// Código Remessa / Retorno1431431-NumG015
@@ -480,7 +480,7 @@ public class LayoutsSuportados {
 					fcedenteCnpj().length(14).filler(Fillers.ZERO_LEFT), fzero().length(20), fagencia().length(6),
 					fconvenio().length(7).filler(Fillers.ZERO_LEFT), fzero().length(7),
 					fcedenteNome().length(30).filler(Fillers.WHITE_SPACE_RIGHT),
-					fbancoNome().length(30).filler(Fillers.WHITE_SPACE_RIGHT), fbranco().length(10),
+					fbancoNome().length(30).truncate(true).filler(Fillers.WHITE_SPACE_RIGHT), fbranco().length(10),
 					fcodigoArquivo().length(1), fdataGeracao().length(8),
 					field("horaGeracao").length(6).format(new SimpleDateFormat("hhmmss")),
 					fsequencialArquivo().length(6), field("versaoLayoutArquivo").length(3).value("107"),
@@ -557,7 +557,7 @@ public class LayoutsSuportados {
 			versao("17")),
 			cabecalho(fbancoCodigo(), flote(), fcodigoRegistro().length(1).value("0"), fbranco().length(9),
 					ftipoInscricao().length(1), fcedenteCnpj().length(14), fzero().length(20), fagencia().length(6),
-					fconvenio().length(7), fzero().length(7), fcedenteNome().length(30), fbancoNome().length(30),
+					fconvenio().length(7), fzero().length(7), fcedenteNome().length(30), fbancoNome().length(30).truncate(true),
 					fbranco().length(10), fcodigoArquivo().length(1), fdataGeracao().length(8),
 					field("horaGeracao").length(6), fsequencialArquivo().length(6),
 					field("versaoLayoutArquivo").length(3), field("densidadeArquivo").length(5), fbranco().length(20),
@@ -813,7 +813,7 @@ public class LayoutsSuportados {
 					fagencia().length(6), // agenca com DV
 					fconta().length(13), // Conta com DV
 					fdac(), fcedenteNome().length(30),
-					fbancoNome().length(30),
+					fbancoNome().length(30).truncate(true),
 					fbranco().length(10),
 					fcodigoArquivo().value(1),
 					fdataGeracao(),
@@ -886,9 +886,14 @@ public class LayoutsSuportados {
 					field("codigoDasOcorrenciasParaRetorno").length(10).filler(Fillers.WHITE_SPACE_RIGHT)
 
 			),
-			detalheSegmentoB(fbancoCodigo().length(3).value("###"), flote().value("#"),
-					fcodigoRegistro().length(1).value("3"), fsequencialRegistro().length(5).value("#####"),
-					fsegmento().id(true).value("B"), fbranco().length(3),
+			detalheSegmentoB(
+					fbancoCodigo().length(3).value("###"), 
+					flote().value("#"),
+					fcodigoRegistro().length(1).value("3"), 
+					fsequencialRegistro().length(5).value("#####"),
+					fsegmento().id(true).value("B"), 
+					ftipoChavePIX(),
+					fbranco().length(1),
 					// Tipo Inscrição Favorecido | CPF = 1, CNPJ = 2
 					favorecidoTipoInscricao().length(1).value("#"),
 					// Endereço do Favorecido - opcional
@@ -959,33 +964,98 @@ public class LayoutsSuportados {
 		cabecalho.get(campoBancoCodigo).value(codigoBanco);
 		cabecalho.get("versaoLayoutArquivo").value("080");
 
+		// regra itau: posicao 15 precisa ter a versao em 3 digitos zero à esquerda		
+		cabecalho.filhos.remove(3);
+		cabecalho.insertAfter(cabecalho.get("codigoRegistro"), field("vazio").value("      ").length(6));
+		cabecalho.insertAfter(cabecalho.get("vazio"), field("versao").value("080").length(3));
+
+		// regra itau: posicao 33 depois do cnpj do cedente precisa ter 20 chars em branco
+		cabecalho.filhos.remove(7);
+		cabecalho.insertAfter(cabecalho.get("cedenteCnpj"), field("convenio2").length(20).padding(Fillers.WHITE_SPACE_RIGHT).value("                    "));
+
+		// regra itau: posicao 158 -> precisa ser 9 zeros
+		cabecalho.filhos.remove(18);
+		cabecalho.filhos.remove(17);
+		cabecalho.insertAfter(cabecalho.get("horaGeracao"), field("complementoDeRegistro").length(9).padding(Fillers.WHITE_SPACE_RIGHT).value("000000000"));
+
+
 		// cabecalhoLote
 		TagLayout cabecalhoLote = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(cabecalhoLote());
 		cabecalhoLote.get(campoBancoCodigo).value(codigoBanco);
 		cabecalhoLote.get("versaoLayoutLote").value("040");
 
-		//INCLUINDO O DAC no lote de cabecalho  - no layout do itau precisa colocar o dac no cabealho do lote também. Não só no cabecalho do arquivo.
+		//regra itau: INCLUINDO O DAC no lote de cabecalho  - no layout do itau precisa colocar o dac no cabealho do lote também. Não só no cabecalho do arquivo.
 		cabecalhoLote.filhos.remove(13);
 		cabecalhoLote.insertAfter(cabecalho.get("conta"), fdac());
+
+		// regra itau: posicao 33 depois do cnpj do cedente precisa ter 20 chars em branco
+		cabecalhoLote.filhos.remove(10);
+		cabecalhoLote.insertAfter(cabecalho.get("cedenteCnpj"), field("convenio3").length(20).padding(Fillers.WHITE_SPACE_RIGHT).value("                    "));
+
+		// regra itau: posicao 173 numero do endereco precisa ser numero com 0 à esq
+		cabecalhoLote.get("numero").padding(Fillers.ZERO_LEFT).value("00000000000000000000");
+		
+
 
 
 		
 		// SegmentoA
 		TagLayout segmentoA = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
+		TagLayout segmentoB = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoB());
+
 		segmentoA.get(campoBancoCodigo).value(codigoBanco);
 
+		//regra itau: posicao 43 INCLUINDO O DAC apos ag/conta - no layout do itau precisa colocar o dac ag/conta na pos 43
+		segmentoA.filhos.remove(10);//10 -> campo com nome em branco, que seria o daccom 1 digito
+		//segmentoA.filhos.remove(9);//9 -> agencia com 13 digitos que precisa virar 12(conta)-1(dac)
+		//segmentoA.insertAfter(segmentoA.get("favorecidoAgencia"), favorecidoConta().length(12).padding(Fillers.ZERO_LEFT).value("000000000000"));
+		segmentoA.insertAfter(segmentoA.get("favorecidoConta"), fdac());
+		
+		// regra itau: posicao 102 a moeda é REA ou 009
+		segmentoA.get("moeda").value("009");
+		
+		
+		// regra itau: posicao 155 data real da efetivacao do pagto deve ser 00000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
+		segmentoA.get("dataRealEfetivacaoPagto").filler(Fillers.ZERO_LEFT).value("00000000");
+
+		// regra itau: posicao 163 Valor Real da Efetivação do Pagto deve ser 000000000000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
+		segmentoA.get("valorRealEfetivacaoPagto").filler(Fillers.ZERO_LEFT).value("000000000000000");
+
+		// regra itau: posicao 198 No de Documento no Retorno deve ser 000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
+		segmentoA.filhos.remove(21); //outrasInfos possui 40 chars por padrao mas vamos desmembrar em 20-6-14 chars
+		
+		segmentoA.insertAfter(segmentoA.get("valorRealEfetivacaoPagto"), field("outrasInfos").length(20).padding(Fillers.WHITE_SPACE_RIGHT).value("                    "));
+		segmentoA.insertAfter(segmentoA.get("outrasInfos"), field("numeroDocumentoRetorno").length(6).padding(Fillers.WHITE_SPACE_RIGHT).value("000000"));
+		segmentoA.insertAfter(segmentoA.get("numeroDocumentoRetorno"), segmentoB.get("favorecidoCPFCNPJ"));
+
+
+
+
+
+
 		// SegmentoB
-		TagLayout segmentoB = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoB());
 		segmentoB.get(campoBancoCodigo).value(codigoBanco);
+
+		//regra itau: posicao 63 -> numero do endereço não pode ser em branco... mudar pra 00000
+		//regra itau: posicao 63 -> cep    do endereço não pode ser em branco... mudar pra 00000000
+		segmentoB.filhos.remove(8); //endereco no template ele tem 95 chars, mas precisamos desmembrar em 30-5-50-8-2 chars para preencher 00000 no campo de 5 chars e 00000000 no campo de 8 chars
+		segmentoB.insertAfter(segmentoB.get("favorecidoCPFCNPJ"), field("endereco").length(30).padding(Fillers.WHITE_SPACE_RIGHT).value("                    "));
+		segmentoB.insertAfter(segmentoB.get("endereco"), field("numero").length(5).padding(Fillers.WHITE_SPACE_RIGHT).value("00000"));
+		segmentoB.insertAfter(segmentoB.get("numero"), field("complementoBairroCidade").length(50).padding(Fillers.WHITE_SPACE_RIGHT).value("                                                  "));
+		segmentoB.insertAfter(segmentoB.get("complementoBairroCidade"), field("cepEndereco").length(8).padding(Fillers.WHITE_SPACE_RIGHT).value("00000000"));
+		segmentoB.insertAfter(segmentoB.get("cepEndereco"), field("ufEndereco").length(2).padding(Fillers.WHITE_SPACE_RIGHT).value("  "));
+
+
 
 		// RodapeLote
 		TagLayout rodapeLote = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(rodapeLote());
 		rodapeLote.get(campoBancoCodigo).value(codigoBanco);
 
+
 		// RodapeArquivo
 		TagLayout rodapeArquivo = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(rodape());
 		rodapeArquivo.get(campoBancoCodigo).value(codigoBanco);
-
+		rodapeArquivo.get("qtdContasParaConciliacao").padding(Fillers.WHITE_SPACE_RIGHT).value("      ");
 	}
 
 	private static final TagLayout _LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_FEBRABAN_CNAB240_PAGAMENTO_REMESSA

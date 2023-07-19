@@ -19,10 +19,10 @@ import static com.github.braully.boleto.TagLayout.TagCreator.fbairro;
 import static com.github.braully.boleto.TagLayout.TagCreator.fcep;
 import static com.github.braully.boleto.TagLayout.TagCreator.fcidade;
 import static com.github.braully.boleto.TagLayout.TagCreator.fcodigoBarras;
+import static com.github.braully.boleto.TagLayout.TagCreator.fdataAcrescimo;
 import static com.github.braully.boleto.TagLayout.TagCreator.fdataDesconto;
 import static com.github.braully.boleto.TagLayout.TagCreator.fdataOcorrencia;
 import static com.github.braully.boleto.TagLayout.TagCreator.fdataPagamento;
-import static com.github.braully.boleto.TagLayout.TagCreator.fdataAcrescimo;
 import static com.github.braully.boleto.TagLayout.TagCreator.fendereco;
 import static com.github.braully.boleto.TagLayout.TagCreator.fmovimentoCodigo;
 import static com.github.braully.boleto.TagLayout.TagCreator.fnossoNumero;
@@ -42,7 +42,9 @@ import static com.github.braully.boleto.TagLayout.TagCreator.fvalorPagamento;
 import static com.github.braully.boleto.TagLayout.TagCreator.fvalorTarifaCustas;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jrimum.texgit.FixedField;
 
 /**
@@ -117,6 +119,14 @@ public class TituloArquivo extends RegistroArquivo {
 	}
 
 	public TituloArquivo formaDeTransferencia(Object formaDeTransferencia) {
+
+		if (Objects.equals(this.bancoCodigo(),"341" ) && Objects.equals(formaDeTransferencia,"018")) {
+			//regra itau: camara de compensassao ficar em 000
+			formaDeTransferencia = "000";
+
+		}
+
+
 		return (TituloArquivo) setValue(formaDeTransferencia);
 	}
 
@@ -124,7 +134,19 @@ public class TituloArquivo extends RegistroArquivo {
 
 	public TituloArquivo favorecidoAgencia(String favorecidoAgencia) {
 
-    	if (favorecidoAgencia != null && favorecidoAgencia.length() == 4) {
+		if (favorecidoAgencia == null) {
+			return this;
+		}
+
+		if (Objects.equals(this.bancoCodigo(),"341" )) {
+			//regra itau: não preencher codigo verificador, deixar em branco
+
+			favorecidoAgencia = StringUtils.truncate(favorecidoAgencia, 0, 4);
+			favorecidoAgencia += " ";
+
+    	}
+
+    	if (favorecidoAgencia.length() == 4) {
     		//caso o usuario não tenha informado o digito verificador, assumir que é 0
     		favorecidoAgencia = favorecidoAgencia + "0";
     	}
@@ -151,6 +173,28 @@ public class TituloArquivo extends RegistroArquivo {
 	}
 
 	public TituloArquivo favorecidoConta(Object favorecidoConta) {
+
+		if (favorecidoConta == null) {
+			return this;
+		}
+
+		if (Objects.equals(this.bancoCodigo(),"341" )) {
+			//regra itau: não preencher codigo verificador, deixar em branco
+
+			//remover ultimo caracter da direita de favorecidoConta e deixar no campo dac
+
+			if (favorecidoConta.toString().length() > 0) {
+
+				this.dac(StringUtils.right(favorecidoConta.toString(), 1));
+				favorecidoConta = favorecidoConta.toString().trim().substring(0, favorecidoConta.toString().length() - 1);
+				favorecidoConta = favorecidoConta.toString().replaceAll("-", "");
+
+			//    //o char do digito precisa virar um espaço em branco
+   			    favorecidoConta += " ";
+			}
+
+    	}    	
+
 		return (TituloArquivo) setValue(favorecidoConta);
 	}
 

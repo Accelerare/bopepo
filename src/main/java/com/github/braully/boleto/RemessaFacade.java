@@ -34,9 +34,12 @@ public class RemessaFacade extends ArquivoFacade {
 		return this.template.getNomeDoArquivo();
 	}
 
-
     public boolean isExigeNumeroDocumento() {
 		return this.template.isExigeNumeroDocumento();
+	}
+
+    public boolean isExigeCPFCNPJFavorecidoNoSegmentoA() {
+		return this.template.isExigeCPFCNPJFavorecidoNoSegmentoA();
 	}
 
 	public RemessaFacade(TagLayout template) {

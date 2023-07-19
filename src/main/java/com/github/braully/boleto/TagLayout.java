@@ -59,7 +59,7 @@ public class TagLayout implements Serializable {
 			if (tagLayout != null) {
 				TagLayout tagUrl = tagLayout.get("url");
 
-				if (tagUrl != null && ((String) tagUrl.value).contains("www.bb.com.br")) {
+				if (tagUrl != null && (((String) tagUrl.value).contains("www.bb.com.br") || ((String) tagUrl.value).contains("itau.com.br"))) {
 					return false;
 				}
 			}
@@ -139,13 +139,6 @@ public class TagLayout implements Serializable {
 		String urlBanco = getUrlBanco();
 
 		if (urlBanco != null) {
-			// if (urlBanco.contains("bb.com.br")) {
-			// return null;
-			// }
-
-			// if (urlBanco.contains("santander")) {
-			// return null;
-			// }
 
 			if (urlBanco.contains("itau.com.br")) {
 
@@ -194,6 +187,20 @@ public class TagLayout implements Serializable {
 
 		return false;
 
+	}
+
+
+	public boolean isExigeCPFCNPJFavorecidoNoSegmentoA() {
+
+		String urlBanco = getUrlBanco();
+
+		if (urlBanco != null) {
+			if (urlBanco.contains("itau.com.br")) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	boolean isAttr(String id) {
@@ -948,6 +955,10 @@ public class TagLayout implements Serializable {
 
 		public static TagLayout fsegmento() {
 			return field("segmento").length(1);
+		}
+
+		public static TagLayout ftipoChavePIX() {
+			return field("tipoChavePIX").length(2).filler(Fillers.WHITE_SPACE_LEFT);
 		}
 
 		/**

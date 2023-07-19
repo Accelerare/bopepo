@@ -112,11 +112,14 @@ public class RegistroArquivo extends Record {
         //qualquer banco -> 0012310000000001232 ACME S.A LTDA.
         //itau deve ficar ->001231000000000123 2ACME S.A LTDA.
 
+        //OBS2: a documentacao do itau dize que não se deve fornecer o digito da agencia e que deve ser deixado em branco
+
         if (Objects.equals(codigoBanco,"341")) {
             System.out.println("Utiliza digito da conta no campo DAC");
 
             dac = StringUtils.right(conta, 1);
             conta = StringUtils.left(conta, conta.length() - 1) + " ";
+            agencia = StringUtils.left(agencia, agencia.length() - 1) + " ";
         }
 
 
@@ -229,6 +232,12 @@ public class RegistroArquivo extends Record {
         }
         return ret;
     }
+
+
+    public RegistroArquivo favorecidoCPFCNPJ(Object favorecidoInscricao) {
+		return (RegistroArquivo) setValue(favorecidoInscricao);
+	}
+
 
     protected String removeLeftZeros(String number) {
         if (number == null) {

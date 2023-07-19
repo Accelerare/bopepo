@@ -21,6 +21,7 @@ import static com.github.braully.boleto.TagLayout.TagCreator.foperacao;
 import static com.github.braully.boleto.TagLayout.TagCreator.fsequencialArquivo;
 import static com.github.braully.boleto.TagLayout.TagCreator.fservico;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  *
@@ -97,6 +98,15 @@ public class CabecalhoArquivo extends RegistroArquivo {
     }
 
     public CabecalhoArquivo forma(Object op) {
+
+        if (Objects.equals(this.bancoCodigo(),"341" )) {
+            //regra itau. só o itau exige que seja 41 para TED
+            if (op.equals(3)) {
+                op = 41;
+            }
+        }
+
+
         setValue(fforma().nome, op);
         return this;
     }
