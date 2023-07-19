@@ -37,9 +37,16 @@ import static com.github.braully.boleto.TagLayout.TagCreator.titulo;
 import static com.github.braully.boleto.TagLayout.TagCreator.versao;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+
+import javax.swing.text.DateFormatter;
 
 import org.jrimum.bopepo.BancosSuportados;
+import org.jrimum.utilix.FileUtil;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -49,6 +56,23 @@ import org.junit.Test;
  * @author braully
  */
 public class TestRemessaFacade {
+
+
+        private String getDataHoraFormatada(Date data) {
+
+                SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss");
+		sdf.setCalendar(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("UTC"))));
+
+                return sdf.format(data);
+        }
+
+        private String getDataFormatada(Date data) {
+                SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+		sdf.setCalendar(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("UTC"))));
+
+                return sdf.format(data);
+        }
+
 
     @Ignore
     @Test
@@ -320,9 +344,11 @@ public class TestRemessaFacade {
 		String DAC = " ";
 		int sequencialRegistro = 1;
 
+                Date dataHoraGeracao = new Date();
+
 		remessa.addNovoCabecalho()
-		.dataGeracao(new Date())
-		.horaGeracao(new Date())
+		.dataGeracao(dataHoraGeracao)
+		.horaGeracao(dataHoraGeracao)
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
@@ -379,7 +405,22 @@ public class TestRemessaFacade {
 
 		String remessaStr = remessa.render();
 		System.out.println(remessaStr);
-	}
+
+                StringBuilder textoEsperado = new StringBuilder();
+
+                textoEsperado.append("03300000         211122233000144123456789012345678900012300000000001234 ACME S.A LTDA.                BANCO SANTANDER (BRASIL) S.A.           1" + getDataHoraFormatada(dataHoraGeracao) + "00002208000000                                                                     " + FileUtil.NEW_LINE 
+                + "03300001C2001031 211122233000144123456789012345678900012300000000001234 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
+                + "0330000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                                                                                   0100010     0          " + FileUtil.NEW_LINE
+                + "0330001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
+                + "03300015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "03399999         000001000014000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
+
+
+
+
+                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+        }
+
 
 	@Test
 	public void testRemessaPagamentoBradesco240() {
@@ -406,10 +447,11 @@ public class TestRemessaFacade {
 
                 String numeroDocumento = "";
 
+                Date dataHoraGeracao = new Date();
 
 		remessa.addNovoCabecalho()
-		.dataGeracao(new Date())
-		.horaGeracao(new Date())
+		.dataGeracao(dataHoraGeracao)
+		.horaGeracao(dataHoraGeracao)
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC);
@@ -435,7 +477,7 @@ public class TestRemessaFacade {
 		.favorecidoConta("1234-5")
 		 //testando sanitize remover acentos e transformar em maiusculo
 		.favorecidoNome("José da Silva")
-		.dataPagamento(new Date())
+		.dataPagamento(dataHoraGeracao)
 		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro);
 
@@ -470,6 +512,20 @@ public class TestRemessaFacade {
 
 		String remessaStr = remessa.render();
 		System.out.println(remessaStr);
+
+                StringBuilder textoEsperado = new StringBuilder();
+
+                textoEsperado.append("23700000         211222333000144555555              0011100000000111111 EMPRESA TESTE XYZ             BRADESCO                                1" + getDataHoraFormatada(dataHoraGeracao) + "00002208901600                                                                     " + FileUtil.NEW_LINE
+                + "23700001C2001045 211222333000144555555              0011100000000111111 EMPRESA TESTE XYZ                                                     AV TESTE                      111                 SAO PAULO           01104010SP01                " + FileUtil.NEW_LINE
+                + "2370000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                                                                                     00010CC   0          " + FileUtil.NEW_LINE
+                + "2370001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
+                + "23700015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "23799999         000001000014000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
+
+
+                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+
+
 	}
 
 	@Test
@@ -490,9 +546,11 @@ public class TestRemessaFacade {
 		int sequencialRegistro = 1;
                 String numeroDocumento = "";
 
+                Date dataHoraGeracao = new Date();
+
 		remessa.addNovoCabecalho()
-		.dataGeracao(new Date())
-		.horaGeracao(new Date())
+		.dataGeracao(dataHoraGeracao)
+		.horaGeracao(dataHoraGeracao)
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
@@ -518,7 +576,7 @@ public class TestRemessaFacade {
                 .numeroDocumento(numeroDocumento)
 		 //testando sanitize remover acentos e transformar em maiusculo
 		.favorecidoNome("José da Silva")
-		.dataPagamento(new Date())
+		.dataPagamento(dataHoraGeracao)
 		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro);
 
@@ -554,6 +612,20 @@ public class TestRemessaFacade {
 
 		String remessaStr = remessa.render();
 		System.out.println(remessaStr);
+
+
+                                StringBuilder textoEsperado = new StringBuilder();
+
+                textoEsperado.append("00100000         2111222330001440123456780126       00123X000000000123X ACME S.A LTDA.                BANCO DO BRASIL S.A.                    1" + getDataHoraFormatada(dataHoraGeracao) + "00002204000000                                                                     " + FileUtil.NEW_LINE
+                + "00100001C2001030 2111222330001440123456780126       00123X000000000123X ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
+                + "0010000300001A0000000330123450000000012345 JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
+                + "0010001300002B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
+                + "00100015         000024000000000000000582000000000000000000000000                                                                                                                                                                               " + FileUtil.NEW_LINE
+                + "00199999         000001000018000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
+
+
+                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+
 	}
 
 	@Test
@@ -579,9 +651,12 @@ public class TestRemessaFacade {
 		int sequencialRegistro = 1;
                 String numeroDocumento = "";
 
+                Date dataHoraGeracao = new Date();
+
+
 		remessa.addNovoCabecalho()
-		.dataGeracao(new Date())
-		.horaGeracao(new Date())
+		.dataGeracao(dataHoraGeracao)
+		.horaGeracao(dataHoraGeracao)
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
@@ -607,7 +682,7 @@ public class TestRemessaFacade {
 		.favorecidoConta("1234-5")
 		 //testando sanitize remover acentos e transformar em maiusculo
 		.favorecidoNome("José da Silva")
-		.dataPagamento(new Date())
+		.dataPagamento(dataHoraGeracao)
 		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro);
 
@@ -669,9 +744,12 @@ public class TestRemessaFacade {
 		int sequencialRegistro = 1;
                 String numeroDocumento = "";
 
+                Date dataHoraGeracao = new Date();
+
+
 		remessa.addNovoCabecalho()
-		.dataGeracao(new Date())
-		.horaGeracao(new Date())                
+		.dataGeracao(dataHoraGeracao)
+		.horaGeracao(dataHoraGeracao)                
 		.sequencialArquivo(22)
 		.cedente(razaoSocial, cnpj)
                 .banco("136","UNICRED")
@@ -699,7 +777,7 @@ public class TestRemessaFacade {
 		.favorecidoConta("1234-5")
 		 //testando sanitize remover acentos e transformar em maiusculo
 		.favorecidoNome("José da Silva")
-		.dataPagamento(new Date())
+		.dataPagamento(dataHoraGeracao)
 		.valor(valorPagamento)
                 .banco("136","UNICRED")
 		.sequencialRegistro(sequencialRegistro);
@@ -738,6 +816,19 @@ public class TestRemessaFacade {
 
 		String remessaStr = remessa.render();
 		System.out.println(remessaStr);
+
+                StringBuilder textoEsperado = new StringBuilder();
+
+                textoEsperado.append("13600000         211122233000144000000000000123456780012310000000012323 ACME S.A LTDA.                UNICRED                                 1" + getDataHoraFormatada(dataHoraGeracao) + "00002210300000                                                                     " + FileUtil.NEW_LINE
+                + "13600001C2001046 211122233000144000000000000123456780012310000000012323 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
+                + "1360000300001A0000003410123450000000012345 JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                                                                                   0100010     0          " + FileUtil.NEW_LINE
+                + "1360001300002B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
+                + "13600015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "13699999         000001000018000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
+
+
+                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+
 	}
 
 
