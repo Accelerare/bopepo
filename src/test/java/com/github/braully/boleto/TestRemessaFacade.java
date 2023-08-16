@@ -964,6 +964,103 @@ public class TestRemessaFacade {
 
 	}
 
+	@Test
+	public void testRemessaPagamentoSicredi240() {
+                        
+                String codigoBanco = "748";
+
+		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa(codigoBanco));
+
+
+		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
+
+		String razaoSocial = "ACME S.A LTDA.";
+		String cnpj = "111.222.33.0001/44";
+
+		String numeroConvenio = "1234567890-1234567890";
+		//testando preenchimento automatico do digito veriricador como 0
+		String agenciaComDigito = "0123";
+		String contaComDigito = "0000123-4";
+		String DAC = " ";
+		int sequencialRegistro = 1;
+
+                
+
+		remessa.addNovoCabecalho()
+		.dataGeracao(dataHoraGeracao)
+		.horaGeracao(dataHoraGeracao)
+		.sequencialArquivo(22)
+		.cedente(razaoSocial, cnpj)
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC);
+
+		remessa.addNovoCabecalhoLote()
+				.forma(1)// 1 = Crédito em Conta Corrente mesmo banco 3 = doc/ted outro banco
+				.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+				.cedente(razaoSocial, cnpj)
+				.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
+
+
+		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+
+		remessa.addNovoDetalheSegmentoA()
+		.numeroDocumento("1")
+		.formaDeTransferencia("000")
+		.favorecidoCodigoBanco("033")
+		.favorecidoAgencia("1234-5")
+		.favorecidoConta("1234-5")
+		 //testando sanitize remover acentos e transformar em maiusculo
+		.favorecidoNome("José da Silva")
+		.dataPagamento(new Date())
+		.valor(valorPagamento)
+		.sequencialRegistro(sequencialRegistro);
+
+		remessa.addNovoDetalheSegmentoB()
+		.numeroDocumento(1)
+		.favorecidoTipoInscricao("1")
+		 //testando sanitize apenasNumeros
+		.favorecidoCPFCNPJ("111.222.33/4-----55")
+		.valor(valorPagamento.toString())
+		.sequencialRegistro(sequencialRegistro)
+		.setValue("data",new Date())
+		.setValue("lote",1);
+
+
+		RodapeArquivo rodapeLote = remessa.addNovoRodapeLote();
+
+		rodapeLote
+		.quantidadeRegistros(24)
+		.valorTotalRegistros(valorPagamento.toString())
+		.cedente(razaoSocial, cnpj)
+		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
+		.setValue("lote",1);
+
+		if (remessa.isPermiteQtdeMoeda()) {
+			rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
+		}
+
+
+		remessa.addNovoRodape()
+		.quantidadeRegistros(14)
+		.quantidadeLotes(1);
+
+		String remessaStr = remessa.render();
+		System.out.println(remessaStr);
+
+                StringBuilder textoEsperado = new StringBuilder();
+
+                textoEsperado.append("74800000         211122233000144123456789012345678900012300000000001234 ACME S.A LTDA.                SICREDI                                 1" + getDataHoraFormatada(dataHoraGeracao) + "00002208200000                                                                     " + FileUtil.NEW_LINE 
+                + "74800001C2001042 211122233000144123456789012345678900012300000000001234 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
+                + "7480000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                                                                                   0100010     0          " + FileUtil.NEW_LINE
+                + "7480001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
+                + "74800015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "74899999         000001000014000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
+
+
+                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+
+
+	}
+
 
     public TagLayout layoutGenericoTest() {
         TagLayout flatfileLayout = flatfile(

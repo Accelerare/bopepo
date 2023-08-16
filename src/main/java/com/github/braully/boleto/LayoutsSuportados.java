@@ -1167,6 +1167,55 @@ public class LayoutsSuportados {
 
 	}
 
+
+	private static final TagLayout _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_FEBRABAN_CNAB240_PAGAMENTO_REMESSA
+			.clone();
+
+	static {
+		// personalizações Sicredi
+
+		String codigoBanco = "748";
+		String campoBancoNome = "bancoNome";
+		String campoBancoCodigo = "bancoCodigo";
+
+		// Layout
+		TagLayout layout = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(layout());
+		layout.get("nome").value("Layout Padrão SICREDI CNAB240 Pagamento Remessa");
+		layout.get("banco").value(codigoBanco);
+		layout.get("url").withValue(
+				"https://www.sicredi.com.br/media/produtos/manual_pagamentos_cnab-240-v2-3.pdf");
+		layout.get("versao").value("82");
+
+		// Cabeçalho
+		TagLayout cabecalho = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(cabecalho());
+		cabecalho.get(campoBancoNome).value("SICREDI");
+		cabecalho.get(campoBancoCodigo).value(codigoBanco);
+
+		cabecalho.get("versaoLayoutArquivo").value("082");
+
+		// cabecalhoLote
+		TagLayout cabecalhoLote = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(cabecalhoLote());
+		cabecalhoLote.get(campoBancoCodigo).value(codigoBanco);
+		cabecalhoLote.get("versaoLayoutLote").value("042");
+
+		// SegmentoA
+		TagLayout segmentoA = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
+		segmentoA.get(campoBancoCodigo).value(codigoBanco);
+
+		// SegmentoB
+		TagLayout segmentoB = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoB());
+		segmentoB.get(campoBancoCodigo).value(codigoBanco);
+
+		// RodapeLote
+		TagLayout rodapeLote = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(rodapeLote());
+		rodapeLote.get(campoBancoCodigo).value(codigoBanco);
+
+		// RodapeArquivo
+		TagLayout rodapeArquivo = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(rodape());
+		rodapeArquivo.get(campoBancoCodigo).value(codigoBanco);
+
+	}
+
 	private static final TagLayout _LAYOUT_BB_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_FEBRABAN_CNAB240_PAGAMENTO_REMESSA
 			.clone();
 
@@ -1273,6 +1322,9 @@ public class LayoutsSuportados {
 			.cloneReadonly();
 
 	public static final TagLayout LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA
+			.cloneReadonly();
+
+	public static final TagLayout LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA
 			.cloneReadonly();
 
 	public static final TagLayout LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA
@@ -1437,6 +1489,8 @@ public class LayoutsSuportados {
 			return LayoutsSuportados.LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA;
 		case "341":
 			return LayoutsSuportados.LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA;
+		case "748":
+			return LayoutsSuportados.LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA;
 		default:
 			return LayoutsSuportados._LAYOUT_FEBRABAN_CNAB240_PAGAMENTO_REMESSA;
 		}
