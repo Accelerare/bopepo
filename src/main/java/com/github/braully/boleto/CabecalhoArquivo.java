@@ -99,8 +99,9 @@ public class CabecalhoArquivo extends RegistroArquivo {
 
     public CabecalhoArquivo forma(Object op) {
 
-        if (Objects.equals(this.bancoCodigo(),"341" )) {
-            //regra itau. só o itau exige que seja 41 para TED
+        if (Objects.equals(this.bancoCodigo(),"341" ) || Objects.equals(this.bancoCodigo(),"748" )) {
+            //regra itau e sicredi. só o itau exige que seja 41 para TED
+            //2024 doc vai deixar de existir
             if (op.equals(3)) {
                 op = 41;
             }

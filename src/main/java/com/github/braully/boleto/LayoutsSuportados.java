@@ -986,11 +986,11 @@ public class LayoutsSuportados {
 
 		//regra itau: INCLUINDO O DAC no lote de cabecalho  - no layout do itau precisa colocar o dac no cabealho do lote também. Não só no cabecalho do arquivo.
 		cabecalhoLote.filhos.remove(13);
-		cabecalhoLote.insertAfter(cabecalho.get("conta"), fdac());
+		cabecalhoLote.insertAfter(cabecalhoLote.get("conta"), fdac());
 
 		// regra itau: posicao 33 depois do cnpj do cedente precisa ter 20 chars em branco
 		cabecalhoLote.filhos.remove(10);
-		cabecalhoLote.insertAfter(cabecalho.get("cedenteCnpj"), field("convenio3").length(20).padding(Fillers.WHITE_SPACE_RIGHT).value("                    "));
+		cabecalhoLote.insertAfter(cabecalhoLote.get("cedenteCnpj"), field("convenio3").length(20).padding(Fillers.WHITE_SPACE_RIGHT).value("                    "));
 
 		// regra itau: posicao 173 numero do endereco precisa ser numero com 0 à esq
 		cabecalhoLote.get("numero").padding(Fillers.ZERO_LEFT).value("00000000000000000000");
@@ -1190,21 +1190,39 @@ public class LayoutsSuportados {
 		TagLayout cabecalho = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(cabecalho());
 		cabecalho.get(campoBancoNome).value("SICREDI");
 		cabecalho.get(campoBancoCodigo).value(codigoBanco);
-
 		cabecalho.get("versaoLayoutArquivo").value("082");
 
 		// cabecalhoLote
 		TagLayout cabecalhoLote = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(cabecalhoLote());
 		cabecalhoLote.get(campoBancoCodigo).value(codigoBanco);
-		cabecalhoLote.get("versaoLayoutLote").value("042");
+		cabecalhoLote.get("versaoLayoutLote").value("042");		
+
+		//regra sicredi: o Pagamento de DOC será descontinuado em Fevereiro de 2024, conforme orientação do BC. Gentileza alterar o código para 41 de TED.
+		cabecalhoLote.filhos.remove(5);
+		cabecalhoLote.insertAfter(cabecalhoLote.get("servico"), field("formaPagamento").value("41").length(2));
+
 
 		// SegmentoA
 		TagLayout segmentoA = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
 		segmentoA.get(campoBancoCodigo).value(codigoBanco);
+		//regra sicredi: de 155 a 162 Deve estar preenchido com zeros, visto que está informação gera gerada no arquivo de retorno. 
+		//Sempre deixar com zeros, de acordo com default da página 13.
+		segmentoA.get("dataRealEfetivacaoPagto").filler(Fillers.ZERO_RIGHT).length(8);
 
+		//regra sicredi: de 163 a 177 Deve estar preenchido com zeros, visto que está informação gera gerada no arquivo de retorno. 
+		//Sempre deixar com zeros, de acordo com default da página 13.
+		segmentoA.get("valorRealEfetivacaoPagto").filler(Fillers.ZERO_RIGHT).length(15);
+
+		
 		// SegmentoB
 		TagLayout segmentoB = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoB());
 		segmentoB.get(campoBancoCodigo).value(codigoBanco);
+
+		//regra sicredi: posicao 226 (aviso ao favorecido) precisa ser preenchido com 0 = não emite aviso
+		segmentoB.filhos.get(16).nome("complemento1");
+		segmentoB.filhos.remove(17);
+		segmentoB.insertAfter(segmentoB.get("complemento1"), field("complemento2").value("0              ").length(15));
+
 
 		// RodapeLote
 		TagLayout rodapeLote = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(rodapeLote());
