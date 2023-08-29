@@ -1192,14 +1192,23 @@ public class LayoutsSuportados {
 		cabecalho.get(campoBancoCodigo).value(codigoBanco);
 		cabecalho.get("versaoLayoutArquivo").value("082");
 
+
+		//regra sicredi: numero do convenio precisa ser preenchido com 4 digitos à esquerda e depois mais 16 espaços em branco 
+		cabecalho.filhos.remove(6);		
+		cabecalho.insertAfter(cabecalho.get("cedenteCnpj"), field("convenio").apenasDigitos(true).filler(Fillers.WHITE_SPACE_RIGHT).length(20));
+
 		// cabecalhoLote
 		TagLayout cabecalhoLote = _LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA.get(cabecalhoLote());
 		cabecalhoLote.get(campoBancoCodigo).value(codigoBanco);
-		cabecalhoLote.get("versaoLayoutLote").value("042");		
+		cabecalhoLote.get("versaoLayoutLote").value("042");
 
 		//regra sicredi: o Pagamento de DOC será descontinuado em Fevereiro de 2024, conforme orientação do BC. Gentileza alterar o código para 41 de TED.
 		cabecalhoLote.filhos.remove(5);
 		cabecalhoLote.insertAfter(cabecalhoLote.get("servico"), field("formaPagamento").value("41").length(2));
+
+		//regra sicredi: numero do convenio precisa ser preenchido com 4 digitos à esquerda e depois mais 16 espaços em branco 
+		cabecalhoLote.filhos.remove(10);		
+		cabecalhoLote.insertAfter(cabecalhoLote.get("cedenteCnpj"), field("convenio").apenasDigitos(true).filler(Fillers.WHITE_SPACE_RIGHT).length(20));
 
 
 		// SegmentoA

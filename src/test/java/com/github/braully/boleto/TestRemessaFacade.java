@@ -970,13 +970,12 @@ public class TestRemessaFacade {
 
 		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa(codigoBanco));
 
-
 		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
 
 		String razaoSocial = "ACME S.A LTDA.";
 		String cnpj = "111.222.33.0001/44";
 
-		String numeroConvenio = "2NZ60000000000000000";
+		String numeroConvenio = "2NZ6";
 		//testando preenchimento automatico do digito veriricador como 0
 		String agenciaComDigito = "0123";
 		String contaComDigito = "0000123-4";
@@ -1047,8 +1046,8 @@ public class TestRemessaFacade {
 
                 StringBuilder textoEsperado = new StringBuilder();
 
-                textoEsperado.append("74800000         2111222330001442NZ600000000000000000012300000000001234 ACME S.A LTDA.                SICREDI                                 1" + getDataHoraFormatada(dataHoraGeracao) + "00002208200000                                                                     " + FileUtil.NEW_LINE 
-                + "74800001C2041042 2111222330001442NZ600000000000000000012300000000001234 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
+                textoEsperado.append("74800000         2111222330001442NZ6                0012300000000001234 ACME S.A LTDA.                SICREDI                                 1" + getDataHoraFormatada(dataHoraGeracao) + "00002208200000                                                                     " + FileUtil.NEW_LINE 
+                + "74800001C2041042 2111222330001442NZ6                0012300000000001234 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
                 + "7480000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
                 + "7480001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000               0              " + FileUtil.NEW_LINE
                 + "74800015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
