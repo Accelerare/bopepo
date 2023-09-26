@@ -970,6 +970,8 @@ public class TestRemessaFacade {
 
 		RemessaFacade remessa = new RemessaFacade(LayoutsSuportados.getLayoutCNAB240PagamentoRemessa(codigoBanco));
 
+                System.out.println("remessa.nomeArquivo = " + remessa.getNomeDoArquivo());
+
 		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
 
 		String razaoSocial = "ACME S.A LTDA.";

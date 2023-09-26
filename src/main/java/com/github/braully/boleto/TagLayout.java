@@ -127,7 +127,11 @@ public class TagLayout implements Serializable {
 		// com nomes iguais. A
 		// variável no nome do arquivo serve para diferenciar um do outro.
 
+		//sicredi -> restricao de numero de chars pode ser .txt ou .rem
+
 		// SANTANDER e BB NAO TEM REGRA
+
+
 
 		SimpleDateFormat sdf = new SimpleDateFormat("ddMM");
 		sdf.setCalendar(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")));
@@ -148,9 +152,20 @@ public class TagLayout implements Serializable {
 
 			}
 
+			//bradesco
 			if (urlBanco.contains("bradesco")) {
 
 				return String.format("CB%s%s.REM", sdf.format(hoje), RandomStringUtils.randomAlphanumeric(2));
+
+			}
+
+			//sicredi - data yyyyMMdd.txt
+			if (urlBanco.contains("sicredi")) {
+
+				SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
+				sdf2.setCalendar(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")));
+
+				return String.format("%s.txt", sdf2.format(hoje));
 
 			}
 
