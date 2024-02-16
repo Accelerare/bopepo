@@ -159,13 +159,13 @@ public class TagLayout implements Serializable {
 
 			}
 
-			//sicredi - data yyyyMMdd.txt
+			//sicredi - data yyyyMMXX.txt
 			if (urlBanco.contains("sicredi")) {
 
-				SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
+				SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
 				sdf2.setCalendar(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")));
 
-				return String.format("%s.txt", sdf2.format(hoje));
+				return String.format("%s%s.txt", sdf2.format(hoje), RandomStringUtils.randomAlphanumeric(2));
 
 			}
 
