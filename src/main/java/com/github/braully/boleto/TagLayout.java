@@ -16,6 +16,7 @@
 package com.github.braully.boleto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,27 +43,41 @@ import org.jrimum.texgit.IFiller;
  */
 public class TagLayout implements Serializable {
 
+
+	private String getTagUrl() {
+		TagLayout tagLayout = null;
+		if (this.getNome().equals("layout")) {
+			tagLayout = this;
+		} else {
+			tagLayout = this.get("layout");
+		}
+
+		if (tagLayout != null) {
+			TagLayout tagUrl = tagLayout.get("url");
+
+			if (tagUrl != null) {
+
+				return ((String) tagUrl.value);
+			}
+
+		}
+
+		return null;
+	}
+
 	public boolean isPermiteQtdeMoeda() {
 
 		// hcosta: unica maneira que encontrei... tenho certeza que tem um jeito mais
 		// inteligente de fazer isso
 
 		try {
-			TagLayout tagLayout = null;
-
-			if (this.getNome().equals("layout")) {
-				tagLayout = this;
-			} else {
-				tagLayout = this.get("layout");
+		
+			String tagUrl = getTagUrl();
+		
+			if (tagUrl != null && (tagUrl.contains("www.bb.com.br") || tagUrl.contains("itau.com.br"))) {
+				return false;
 			}
 
-			if (tagLayout != null) {
-				TagLayout tagUrl = tagLayout.get("url");
-
-				if (tagUrl != null && (((String) tagUrl.value).contains("www.bb.com.br") || ((String) tagUrl.value).contains("itau.com.br"))) {
-					return false;
-				}
-			}
 		} catch (Exception e) {
 			return true;
 		}

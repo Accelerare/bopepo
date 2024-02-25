@@ -125,7 +125,7 @@ public class RemessaFacade extends ArquivoFacade {
     }
 
     public RodapeArquivo novoRodape(String tipoRodape) {
-        RodapeArquivo rodape = new RodapeArquivo(template.get(tipoRodape));
+        RodapeArquivo rodape = new RodapeArquivo(template.get(tipoRodape), this);
         return rodape;
     }
 

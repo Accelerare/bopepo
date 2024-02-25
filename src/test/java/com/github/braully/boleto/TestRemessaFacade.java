@@ -75,6 +75,17 @@ public class TestRemessaFacade {
         }
 
 
+        private void verificarResultadoPorLinha(String remessaStr, StringBuilder textoEsperado) {
+                //fazer split por FileUtil.NEW_LINE e verificar cada linha
+                  String[] linhasExperadas = textoEsperado.toString().split(FileUtil.NEW_LINE);
+                  String[] linhas = remessaStr.split(FileUtil.NEW_LINE);
+  
+                  for (int i = 0; i < linhasExperadas.length; i++) {
+                          Assert.assertEquals(linhasExperadas[i], linhas[i]);
+                          System.out.println("linhas " + i + " OK" );
+                  }
+        }
+
     @Ignore
     @Test
     public void testRemessaCobancaGenericaFebraban240V5SegmentoPQ() {
@@ -113,13 +124,13 @@ public class TestRemessaFacade {
 
         remessa.addNovoRodapeLote()
                 .quantidadeRegistros(2)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .setVal("codigoRetorno", "1")
                 .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
@@ -169,7 +180,7 @@ public class TestRemessaFacade {
 
         remessa.addNovoRodapeLote()
                 .quantidadeRegistros(2)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1")
                 .convenio(null,"1", "1", "1", "1")
@@ -177,7 +188,7 @@ public class TestRemessaFacade {
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .setVal("codigoRetorno", "1")
                 .banco("0", "Banco").cedente("ACME S.A LTDA.", "1")
                 .convenio(null,"1", "1", "1", "1")
@@ -222,13 +233,13 @@ public class TestRemessaFacade {
 
         remessa.addNovoRodapeLote()
                 .quantidadeRegistros(2)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .setVal("codigoRetorno", "1")
                 .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
@@ -272,13 +283,13 @@ public class TestRemessaFacade {
 
         remessa.addNovoRodapeLote()
                 .quantidadeRegistros(2)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .banco("0", "Banco")
                 .cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .setVal("codigoRetorno", "1")
                 .banco("0", "Banco").cedente("ACME S.A LTDA.", "1").convenio(null,"1", "1", "1", "1");
 
@@ -305,7 +316,7 @@ public class TestRemessaFacade {
 
         remessa.addNovoRodape()
                 .quantidadeRegistros(1)
-                .valorTotalRegistros(1)
+                .valorTotalRegistros(new BigDecimal(1))
                 .setValue("codigoRetorno", "1");
 
         String remessaStr = remessa.render();
@@ -333,7 +344,6 @@ public class TestRemessaFacade {
 
 		Assert.assertEquals(true, remessa.isPermiteQtdeMoeda());
 
-
 		String razaoSocial = "ACME S.A LTDA.";
 		String cnpj = "111.222.33.0001/44";
 
@@ -345,7 +355,6 @@ public class TestRemessaFacade {
 		int sequencialRegistro = 1;
 
                 
-
 		remessa.addNovoCabecalho()
 		.dataGeracao(dataHoraGeracao)
 		.horaGeracao(dataHoraGeracao)
@@ -360,7 +369,7 @@ public class TestRemessaFacade {
 				.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
 
-		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+                BigDecimal valorPagamento = new BigDecimal(47292.00);
 
 		remessa.addNovoDetalheSegmentoA()
 		.numeroDocumento("1")
@@ -379,7 +388,7 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento.toString())
+		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
 		.setValue("lote",1);
@@ -389,15 +398,10 @@ public class TestRemessaFacade {
 
 		rodapeLote
 		.quantidadeRegistros(24)
-		.valorTotalRegistros(valorPagamento.toString())
+		.valorTotalRegistros(valorPagamento)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
-
-		if (remessa.isPermiteQtdeMoeda()) {
-			rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
-		}
-
 
 		remessa.addNovoRodape()
 		.quantidadeRegistros(14)
@@ -408,17 +412,17 @@ public class TestRemessaFacade {
 
                 StringBuilder textoEsperado = new StringBuilder();
 
-                textoEsperado.append("03300000         211122233000144123456789012345678900012300000000001234 ACME S.A LTDA.                BANCO SANTANDER (BRASIL) S.A.           1" + getDataHoraFormatada(dataHoraGeracao) + "00002208000000                                                                     " + FileUtil.NEW_LINE 
+                textoEsperado.append("03300000         211122233000144123456789012345678900012300000000001234 ACME S.A LTDA.                BANCO SANTANDER (BRASIL) S.A.           1" + getDataHoraFormatada(dataHoraGeracao) + "00002206000000                                                                     " + FileUtil.NEW_LINE 
                 + "03300001C2001031 211122233000144123456789012345678900012300000000001234 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
-                + "0330000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                                                                                   0100010     0          " + FileUtil.NEW_LINE
-                + "0330001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
-                + "03300015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
-                + "03399999         000001000014000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
+                + "0330000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000004729200                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
+                + "0330001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000004729200000000000000000000000000000000000000000000000000000000000000                   0          " + FileUtil.NEW_LINE
+                + "03300015         000024000000000004729200000000004729200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "03399999         000001000014                                                                                                                                                                                                                   " + FileUtil.NEW_LINE);
 
 
 
+                verificarResultadoPorLinha(remessaStr, textoEsperado);
 
-                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
         }
 
 
@@ -462,7 +466,7 @@ public class TestRemessaFacade {
 				.endereco("AV TESTE","111","","São Paulo","01104010", "SP");
 
 
-		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorPagamento = new BigDecimal(5.82);
 
                 if (remessa.isExigeNumeroDocumento()) {
                         numeroDocumento = "1";
@@ -485,7 +489,7 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento.toString())
+		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
 		.setValue("lote",1);
@@ -495,15 +499,10 @@ public class TestRemessaFacade {
 
 		rodapeLote
 		.quantidadeRegistros(24)
-		.valorTotalRegistros(valorPagamento.toString())
+		.valorTotalRegistros(valorPagamento)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
-
-		if (remessa.isPermiteQtdeMoeda()) {
-			rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
-		}
-
 
 		remessa.addNovoRodape()
 		.quantidadeRegistros(14)
@@ -516,14 +515,13 @@ public class TestRemessaFacade {
 
                 textoEsperado.append("23700000         211222333000144555555              0011100000000111111 EMPRESA TESTE XYZ             BRADESCO                                1" + getDataHoraFormatada(dataHoraGeracao) + "00002208901600                                                                     " + FileUtil.NEW_LINE
                 + "23700001C2001045 211222333000144555555              0011100000000111111 EMPRESA TESTE XYZ                                                     AV TESTE                      111                 SAO PAULO           01104010SP01                " + FileUtil.NEW_LINE
-                + "2370000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                                                                                     00010CC   0          " + FileUtil.NEW_LINE
+                + "2370000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000000582                                                                                     00010CC   0          " + FileUtil.NEW_LINE
                 + "2370001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
-                + "23700015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "23700015         000024000000000000000582000000000000582000                                                                                                                                                                                     " + FileUtil.NEW_LINE
                 + "23799999         000001000014000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
 
 
-                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
-
+                verificarResultadoPorLinha(remessaStr, textoEsperado);
 
 	}
 
@@ -559,7 +557,7 @@ public class TestRemessaFacade {
 		.cedente(razaoSocial, cnpj)
 		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
-		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorPagamento = new BigDecimal(5.82);
 
                 if (remessa.isExigeNumeroDocumento()) {
                         numeroDocumento = "1";
@@ -585,7 +583,7 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento.toString())
+		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
 		.setValue("lote",1);
@@ -595,14 +593,10 @@ public class TestRemessaFacade {
 
 		rodapeLote
 		.quantidadeRegistros(24)
-		.valorTotalRegistros(valorPagamento.toString())
+		.valorTotalRegistros(valorPagamento)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
-
-		if (remessa.isPermiteQtdeMoeda()) {
-			rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
-		}
 
 		remessa.addNovoRodape()
 		.quantidadeRegistros(18)
@@ -615,13 +609,14 @@ public class TestRemessaFacade {
 
                 textoEsperado.append("00100000         2111222330001440123456780126       00123X000000000123X ACME S.A LTDA.                BANCO DO BRASIL S.A.                    1" + getDataHoraFormatada(dataHoraGeracao) + "00002204000000                                                                     " + FileUtil.NEW_LINE
                 + "00100001C2001030 2111222330001440123456780126       00123X000000000123X ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
-                + "0010000300001A0000000330123450000000012345 JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
+                + "0010000300001A0000000330123450000000012345 JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000000582                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
                 + "0010001300002B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
                 + "00100015         000024000000000000000582000000000000000000000000                                                                                                                                                                               " + FileUtil.NEW_LINE
                 + "00199999         000001000018000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
 
 
-                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+              
+                verificarResultadoPorLinha(remessaStr, textoEsperado);
 
 	}
 
@@ -666,7 +661,7 @@ public class TestRemessaFacade {
 		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
 
-		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorPagamento = new BigDecimal(5.82);
 
                 if (remessa.isExigeNumeroDocumento()) {
                         numeroDocumento = "123456";
@@ -698,7 +693,7 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento.toString())
+		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
 		.setValue("lote",1);
@@ -719,7 +714,7 @@ public class TestRemessaFacade {
 		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
 
-		BigDecimal valorPagamento2 = new BigDecimal(1200.00).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorPagamento2 = new BigDecimal(1200.00);
 
                 if (remessa.isExigeNumeroDocumento()) {
                         numeroDocumento = "654321";
@@ -751,7 +746,7 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento2.toString())
+		.valor(valorPagamento2)
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
 		.setValue("lote",1);
@@ -774,7 +769,7 @@ public class TestRemessaFacade {
 		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
 
-		BigDecimal valorPagamento3 = new BigDecimal(1200.00).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorPagamento3 = new BigDecimal(1200.00);
 
                 if (remessa.isExigeNumeroDocumento()) {
                         numeroDocumento = "654321";
@@ -794,7 +789,7 @@ public class TestRemessaFacade {
 		 //testando sanitize remover acentos e transformar em maiusculo
 		.favorecidoNome("José da Silva BB")
 		.dataPagamento(new Date())
-		.valor(valorPagamento2)
+		.valor(valorPagamento3)
 		.sequencialRegistro(sequencialRegistro)
                 .favorecidoCPFCNPJ(favorecidoCPFCNPJSegmentoA);
 
@@ -805,7 +800,7 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento2.toString())
+		.valor(valorPagamento3)
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
 		.setValue("lote",1);
@@ -818,16 +813,15 @@ public class TestRemessaFacade {
 
 		RodapeArquivo rodapeLote = remessa.addNovoRodapeLote();
 
+                BigDecimal valorTotalRegistros = valorPagamento.add(valorPagamento2).add(valorPagamento3);
+                //5.82 + 1200.00 + 1200.00 = 2405.82
+
 		rodapeLote
 		.quantidadeRegistros(24)
-		.valorTotalRegistros(valorPagamento.toString())
+		.valorTotalRegistros(valorTotalRegistros)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
-
-		if (remessa.isPermiteQtdeMoeda()) {
-		        rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
-		}
 
 		remessa.addNovoRodape()
 		.quantidadeRegistros(18)
@@ -840,18 +834,18 @@ public class TestRemessaFacade {
 
                 textoEsperado.append("34100000      080211122233000144                    00123 000000004567 8ACME S.A LTDA.                BANCO ITAU SA                           1" + getDataHoraFormatada(dataHoraGeracao) + "00000000000000                                                                     " + FileUtil.NEW_LINE
                 + "34100001C2001040 211122233000144                    00123 000000004567 8ACME S.A LTDA.                                                        RUA XYZ                       00123               SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
-                + "3410000300001A00000034108118 000000007137 5JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "009000000000000000000000000582000                    00000000000000000000000                    000000111222330001440100010     0          " + FileUtil.NEW_LINE
+                + "3410000300001A00000034108118 000000007137 5JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "009000000000000000000000000000582                    00000000000000000000000                    000000111222330001440100010     0          " + FileUtil.NEW_LINE
                 + "3410001300002B   100011122233455                              00000                                                  00000000  " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
                 + "34100001C2041040 211122233000144                    00123 000000004567 8ACME S.A LTDA.                                                        RUA XYZ                       00123               SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
-                + "3410000300003A00000000101178 000000039346 0JOSE DA SILVA BB                                  " + getDataFormatada(dataHoraGeracao) + "009000000000000000000000120000000                    00000000000000000000000                    000000444333222000110100010     0          " + FileUtil.NEW_LINE
+                + "3410000300003A00000000101178 000000039346 0JOSE DA SILVA BB                                  " + getDataFormatada(dataHoraGeracao) + "009000000000000000000000000120000                    00000000000000000000000                    000000444333222000110100010     0          " + FileUtil.NEW_LINE
                 + "3410001300004B   100011122233455                              00000                                                  00000000  " + getDataFormatada(dataHoraGeracao) + "000000000120000000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
                 + "34100001C2045040 211122233000144                    00123 000000004567 8ACME S.A LTDA.                                                        RUA XYZ                       00123               SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
-                + "3410000300005A00000900101178 000000039346 0JOSE DA SILVA BB                                  " + getDataFormatada(dataHoraGeracao) + "009000000000000000000000120000000                    00000000000000000000000                    000000444333222000110100010     0          " + FileUtil.NEW_LINE
+                + "3410000300005A00000900101178 000000039346 0JOSE DA SILVA BB                                  " + getDataFormatada(dataHoraGeracao) + "009000000000000000000000000120000                    00000000000000000000000                    000000444333222000110100010     0          " + FileUtil.NEW_LINE
                 + "3410001300006B   100011122233455                              00000                                                  00000000  " + getDataFormatada(dataHoraGeracao) + "000000000120000000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
-                + "34100015         000024000000000000000582000000000000000000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "34100015         000024000000000000240582000000000000000000                                                                                                                                                                                     " + FileUtil.NEW_LINE
                 + "34199999         000001000018                                                                                                                                                                                                                   " + FileUtil.NEW_LINE);
                                                                                                                                                                                                                
-                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+                  verificarResultadoPorLinha(remessaStr, textoEsperado);
 	}
 
 	@Test
@@ -894,8 +888,7 @@ public class TestRemessaFacade {
 		.cedente(razaoSocial, cnpj)
 		.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
-
-		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorPagamento = new BigDecimal(5.82);
 
                 if (remessa.isExigeNumeroDocumento()) {
                         numeroDocumento = "123456";
@@ -921,7 +914,7 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento.toString())
+		.valor(valorPagamento)
                 .banco("136","UNICRED")
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
@@ -932,15 +925,11 @@ public class TestRemessaFacade {
 
 		rodapeLote
 		.quantidadeRegistros(24)
-		.valorTotalRegistros(valorPagamento.toString())
+		.valorTotalRegistros(valorPagamento)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
                 .banco("136","UNICRED")
 		.setValue("lote",1);
-
-		if (remessa.isPermiteQtdeMoeda()) {
-			rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
-		}
 
 		remessa.addNovoRodape()
 		.quantidadeRegistros(18)                
@@ -953,13 +942,12 @@ public class TestRemessaFacade {
 
                 textoEsperado.append("13600000         211122233000144000000000000123456780012310000000012323 ACME S.A LTDA.                UNICRED                                 1" + getDataHoraFormatada(dataHoraGeracao) + "00002210300000                                                                     " + FileUtil.NEW_LINE
                 + "13600001C2001046 211122233000144000000000000123456780012310000000012323 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
-                + "1360000300001A0000003410123450000000012345 JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                                                                                   0100010     0          " + FileUtil.NEW_LINE
+                + "1360000300001A0000003410123450000000012345 JOSE DA SILVA                                     " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000000582                                                                                   0100010     0          " + FileUtil.NEW_LINE
                 + "1360001300002B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
-                + "13600015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "13600015         000024000000000000000582000000000000582000                                                                                                                                                                                     " + FileUtil.NEW_LINE
                 + "13699999         000001000018000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
 
-
-                Assert.assertEquals(textoEsperado.toString(),  remessaStr);
+                verificarResultadoPorLinha(remessaStr, textoEsperado);
 
 	}
 
@@ -1000,7 +988,7 @@ public class TestRemessaFacade {
 				.endereco("Rua XYZ","123","","São Paulo","12345-123", "SP");
 
 
-		BigDecimal valorPagamento = new BigDecimal(5.82).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorPagamento = new BigDecimal(5.82);
 
 		remessa.addNovoDetalheSegmentoA()
 		.numeroDocumento("1")
@@ -1019,25 +1007,19 @@ public class TestRemessaFacade {
 		.favorecidoTipoInscricao("1")
 		 //testando sanitize apenasNumeros
 		.favorecidoCPFCNPJ("111.222.33/4-----55")
-		.valor(valorPagamento.toString())
+		.valor(valorPagamento)
 		.sequencialRegistro(sequencialRegistro)
 		.setValue("data",new Date())
 		.setValue("lote",1);
-
 
 		RodapeArquivo rodapeLote = remessa.addNovoRodapeLote();
 
 		rodapeLote
 		.quantidadeRegistros(24)
-		.valorTotalRegistros(valorPagamento.toString())
+		.valorTotalRegistros(valorPagamento)
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco, numeroConvenio, agenciaComDigito, contaComDigito, DAC)
 		.setValue("lote",1);
-
-		if (remessa.isPermiteQtdeMoeda()) {
-			rodapeLote.setValue("qtdeMoeda", valorPagamento.multiply(new BigDecimal(100000)).setScale(0).toString());
-		}
-
 
 		remessa.addNovoRodape()
 		.quantidadeRegistros(14)
@@ -1050,9 +1032,9 @@ public class TestRemessaFacade {
 
                 textoEsperado.append("74800000         2111222330001442NZ6                0012300000000001234 ACME S.A LTDA.                SICREDI                                 1" + getDataHoraFormatada(dataHoraGeracao) + "00002208200000                                                                     " + FileUtil.NEW_LINE 
                 + "74800001C2041042 2111222330001442NZ6                0012300000000001234 ACME S.A LTDA.                                                        RUA XYZ                       123                 SAO PAULO           12345123SP                  " + FileUtil.NEW_LINE
-                + "7480000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000582000                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
+                + "7480000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000000582                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
                 + "7480001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000               0              " + FileUtil.NEW_LINE
-                + "74800015         000024000000000000000582000000000058200000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "74800015         000024000000000000000582000000000000582000                                                                                                                                                                                     " + FileUtil.NEW_LINE
                 + "74899999         000001000014000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
 
 

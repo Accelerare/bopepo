@@ -15,14 +15,21 @@
  */
 package com.github.braully.boleto;
 
+import static com.github.braully.boleto.TagLayout.TagCreator.rodapeLote;
+
+import java.math.BigDecimal;
+
 /**
  *
  * @author braully
  */
 public class RodapeArquivo extends RegistroArquivo {
 
-    public RodapeArquivo(TagLayout get) {
+    private RemessaFacade remessa;
+
+    public RodapeArquivo(TagLayout get, RemessaFacade remessa) {        
         super(get);
+        this.remessa = remessa;
     }
 
     public RodapeArquivo quantidadeRegistros(Number valorQuantidade) {
@@ -37,7 +44,16 @@ public class RodapeArquivo extends RegistroArquivo {
         return getValueAsNumber();
     }
 
-    public RodapeArquivo valorTotalRegistros(Object valorTotal) {
-        return (RodapeArquivo) setValue(valorTotal);
+    public RodapeArquivo valorTotalRegistros(BigDecimal valorTotal) {
+
+        String valorAsString = valorTotal.multiply(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString();
+
+        if (remessa.isPermiteQtdeMoeda()) {
+            //qtdeMoeda deve ter 5 casas decimais, por isso multiplicamos por 100.000
+			this.setValue("qtdeMoeda",valorTotal.multiply(new BigDecimal(100000)).setScale(0, BigDecimal.ROUND_HALF_UP).toString());
+		}
+
+        return (RodapeArquivo) setValue(valorAsString);
     }
+
 }

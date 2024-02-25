@@ -41,6 +41,8 @@ import static com.github.braully.boleto.TagLayout.TagCreator.fvalorOcorrencia;
 import static com.github.braully.boleto.TagLayout.TagCreator.fvalorPagamento;
 import static com.github.braully.boleto.TagLayout.TagCreator.fvalorTarifaCustas;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -80,6 +82,13 @@ public class TituloArquivo extends RegistroArquivo {
 
 	public String sacadoCpf() {
 		return getValue(fsacadoCpf().nome);
+	}
+
+	public TituloArquivo valor(BigDecimal valor) {
+
+		String valorAsString = valor.multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString();
+
+		return (TituloArquivo) setValue(fvalor().nome, valorAsString);
 	}
 
 	public TituloArquivo valor(Object string) {

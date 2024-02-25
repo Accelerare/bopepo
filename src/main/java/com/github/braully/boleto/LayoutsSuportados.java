@@ -1128,21 +1128,22 @@ public class LayoutsSuportados {
 		String codigoSantander = "033";
 		String campoBancoNome = "bancoNome";
 		String campoBancoCodigo = "bancoCodigo";
+		String avisoAoFavorecido = "avisoAoFavorecido";
 
 		// Layout
 		TagLayout layout = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA.get(layout());
 		layout.get("nome").value("Layout Padrão Santander CNAB240 Pagamento Remessa");
 		layout.get("banco").value(codigoSantander);
 		layout.get("url").withValue(
-				"https://cms.santander.com.br/sites/WPS/documentos/arq-layout-de-arquivos-1/17-10-26_171722_258-37-pagamento+a+fornecedores+layout+cnab+240+-+v10.pdf");
-		layout.get("versao").value("80");
+				"https://cms.santander.com.br/sites/WPS/documentos/arq-layout-pagamento-fornecedores-mai22/23-03-07_150124_pagamento_a_fornecedores_layout_cnab_240_v11.3.2_newpt.pdf");
+		layout.get("versao").value("60");
 
 		// Cabeçalho
 		TagLayout cabecalho = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA.get(cabecalho());
 		cabecalho.get(campoBancoNome).value("Banco Santander (Brasil) S.A.");
 		cabecalho.get(campoBancoCodigo).value(codigoSantander);
 
-		cabecalho.get("versaoLayoutArquivo").value("080");
+		cabecalho.get("versaoLayoutArquivo").value("060");
 
 		// cabecalhoLote
 		TagLayout cabecalhoLote = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA.get(cabecalhoLote());
@@ -1153,9 +1154,25 @@ public class LayoutsSuportados {
 		TagLayout segmentoA = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
 		segmentoA.get(campoBancoCodigo).value(codigoSantander);
 
+		//regra santander: os campos valorRealEfetivacaoPagto e dataRealEfetivacaoPagto são preenchidos com a mesma informação dos dados previstos para o pagamento
+		
+		
+		//regra santander: de 155 a 162 Deve estar preenchido conforme o campo de data prevista
+		segmentoA.get("dataRealEfetivacaoPagto").filler(Fillers.ZERO_RIGHT).length(8);
+
+		//regra santander: de 163 a 177 Deve estar preenchido conforme o campo de valor 
+		segmentoA.get("valorRealEfetivacaoPagto").filler(Fillers.ZERO_RIGHT).length(15);
+
+
 		// SegmentoB
 		TagLayout segmentoB = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoB());
 		segmentoB.get(campoBancoCodigo).value(codigoSantander);
+
+		//regra santander: posicao 230 (aviso ao favorecido) precisa ser preenchido com 0 = não emite aviso
+		segmentoB.filhos.get(16).nome("complemento1");
+		segmentoB.filhos.remove(17);
+		segmentoB.insertAfter(segmentoB.get("complemento1"), field("complemento2").value("    0          ").length(15));
+
 
 		// RodapeLote
 		TagLayout rodapeLote = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA.get(rodapeLote());
@@ -1164,6 +1181,10 @@ public class LayoutsSuportados {
 		// RodapeArquivo
 		TagLayout rodapeArquivo = _LAYOUT_SANTANDER_CNAB240_PAGAMENTO_REMESSA.get(rodape());
 		rodapeArquivo.get(campoBancoCodigo).value(codigoSantander);
+		//regra santander:
+		rodapeArquivo.get("qtdContasParaConciliacao").filler(Fillers.WHITE_SPACE_LEFT).length(6);
+
+
 
 	}
 
