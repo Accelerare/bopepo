@@ -1103,15 +1103,43 @@ public class LayoutsSuportados {
 
 		segmentoA.get("complTipoServico").value("  ");
 		segmentoA.get("finalidadePagamento").value("CC");
+
+		// regra bradesco: posicao 155 data real da efetivacao do pagto deve ser 00000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
+		segmentoA.get("dataRealEfetivacaoPagto").filler(Fillers.ZERO_LEFT).value("00000000");
+
+		// regra bradesco: posicao 163 Valor Real da Efetivação do Pagto deve ser 000000000000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
+		segmentoA.get("valorRealEfetivacaoPagto").filler(Fillers.ZERO_LEFT).value("000000000000000");
+
 		
 
 		// SegmentoB
 		TagLayout segmentoB = _LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoB());
 		segmentoB.get(campoBancoCodigo).value(codigoBanco);
 
+		
+		//regra bradesco: posicao 63 -> cep do endereço não pode ser em branco... mudar pra 00000000
+		segmentoB.filhos.remove(9); //endereco no template ele tem 95 chars, mas precisamos desmembrar em 30-5-50-8-2 chars para preencher 00000000 no campo de 8 chars
+		segmentoB.insertAfter(segmentoB.get("favorecidoCPFCNPJ"), field("endereco").length(30).padding(Fillers.WHITE_SPACE_RIGHT).value("                              "));
+		segmentoB.insertAfter(segmentoB.get("endereco"), field("numero").length(5).padding(Fillers.WHITE_SPACE_RIGHT).value("     "));
+		segmentoB.insertAfter(segmentoB.get("numero"), field("complementoBairroCidade").length(50).padding(Fillers.WHITE_SPACE_RIGHT).value("                                                  "));
+		segmentoB.insertAfter(segmentoB.get("complementoBairroCidade"), field("cepEndereco").length(8).padding(Fillers.WHITE_SPACE_RIGHT).value("00000000"));
+		segmentoB.insertAfter(segmentoB.get("cepEndereco"), field("ufEndereco").length(2).padding(Fillers.WHITE_SPACE_RIGHT).value("  "));
+		
+		
+		//regra bradesco: posicao 226 (aviso ao favorecido) precisa ser preenchido com 0 = não emite aviso
+		segmentoB.filhos.get(20).nome("complemento1");
+		segmentoB.filhos.remove(21);
+		segmentoB.insertAfter(segmentoB.get("complemento1"), field("complemento2").value("0              ").length(15));
+		
+
 		// RodapeLote
 		TagLayout rodapeLote = _LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA.get(rodapeLote());
 		rodapeLote.get(campoBancoCodigo).value(codigoBanco);
+
+		//regra bradesco 042 a 059 -> somatório de quantidade de moedas - informar zeros
+		//regra bradesco 060 a 065 -> número aviso de débito - informar zeros
+		rodapeLote.get("qtdeMoeda").value("000000000000000000");
+		rodapeLote.get("numeroAvisoDeDebito").value("000000").filler(Fillers.ZERO_LEFT);
 
 		// RodapeArquivo
 		TagLayout rodapeArquivo = _LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA.get(rodape());

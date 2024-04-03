@@ -195,24 +195,13 @@ public class TagLayout implements Serializable {
 		// hcosta: unica maneira que encontrei... tenho certeza que tem um jeito mais
 		// inteligente de fazer isso
 
-		try {
-			TagLayout tagLayout = null;
+		String urlBanco = getUrlBanco();
 
-			if (this.getNome().equals("layout")) {
-				tagLayout = this;
-			} else {
-				tagLayout = this.get("layout");
-			}
-
-			if (tagLayout != null) {
-				TagLayout tagUrl = tagLayout.get("url");
-
-				if (tagUrl != null && ((String) tagUrl.value).contains("bradesco")) {
+		if (urlBanco != null) {
+				//bradesco
+				if (urlBanco.contains("bradesco")) {
 					return true;
 				}
-			}
-		} catch (Exception e) {
-			return false;
 		}
 
 		return false;

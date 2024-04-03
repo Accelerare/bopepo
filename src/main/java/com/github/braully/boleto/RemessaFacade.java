@@ -17,6 +17,10 @@ package com.github.braully.boleto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jrimum.texgit.Fillers;
+import org.jrimum.texgit.FixedField;
+import org.jrimum.texgit.MetaOrderedField;
+import org.jrimum.texgit.FixedField;
 
 /**
  *
@@ -25,6 +29,9 @@ import org.apache.logging.log4j.Logger;
 public class RemessaFacade extends ArquivoFacade {
 
 	public static Logger logger = LogManager.getLogger(ArquivoFacade.class);
+
+
+    int quantidadeSegmentoA = 0;
 
     public boolean isPermiteQtdeMoeda() {
 		return this.template.isPermiteQtdeMoeda();
@@ -71,10 +78,20 @@ public class RemessaFacade extends ArquivoFacade {
 
     public TituloArquivo addNovoDetalhe(String segmento) {
         TituloArquivo titulo = this.novoTitulo("detalheSegmento" + segmento);
+
+
+        if (this.isExigeNumeroDocumento() && segmento.equals("A")) {
+            this.quantidadeSegmentoA++;
+            titulo.getField("numeroDocumento").setFiller(Fillers.WHITE_SPACE_RIGHT);
+
+            titulo.setValue("numeroDocumento", quantidadeSegmentoA);
+        }
+        
         this.add(titulo);
+        
         return titulo;
     }
-
+    
     public TituloArquivo addNovoDetalheSegmentoA() {
         return addNovoDetalhe("A");
     }

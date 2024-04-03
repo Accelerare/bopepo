@@ -472,8 +472,8 @@ public class TestRemessaFacade {
                         numeroDocumento = "1";
 		}
 
+//		.numeroDocumento(numeroDocumento)
 		remessa.addNovoDetalheSegmentoA()
-		.numeroDocumento(numeroDocumento)
 		.formaDeTransferencia("000")
 		.favorecidoCodigoBanco("033")
 		.favorecidoAgencia("1234-5")
@@ -515,9 +515,9 @@ public class TestRemessaFacade {
 
                 textoEsperado.append("23700000         211222333000144555555              0011100000000111111 EMPRESA TESTE XYZ             BRADESCO                                1" + getDataHoraFormatada(dataHoraGeracao) + "00002208901600                                                                     " + FileUtil.NEW_LINE
                 + "23700001C2001045 211222333000144555555              0011100000000111111 EMPRESA TESTE XYZ                                                     AV TESTE                      111                 SAO PAULO           01104010SP01                " + FileUtil.NEW_LINE
-                + "2370000300001A0000000330123450000000012345 JOSE DA SILVA                      1              " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000000582                                                                                     00010CC   0          " + FileUtil.NEW_LINE
-                + "2370001300001B   100011122233455                                                                                               " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000                              " + FileUtil.NEW_LINE
-                + "23700015         000024000000000000000582000000000000582000                                                                                                                                                                                     " + FileUtil.NEW_LINE
+                + "2370000300001A0000000330123450000000012345 JOSE DA SILVA                 1                   " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000000582                    00000000000000000000000                                          00010CC   0          " + FileUtil.NEW_LINE
+                + "2370001300001B   100011122233455                                                                                     00000000  " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000               0              " + FileUtil.NEW_LINE                                                                                                                                                                                        
+                + "23700015         000024000000000000000582000000000000582000000000                                                                                                                                                                               " + FileUtil.NEW_LINE
                 + "23799999         000001000014000000                                                                                                                                                                                                             " + FileUtil.NEW_LINE);
 
 
