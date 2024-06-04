@@ -1101,9 +1101,6 @@ public class LayoutsSuportados {
 		TagLayout segmentoA = _LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
 		segmentoA.get(campoBancoCodigo).value(codigoBanco);
 
-		segmentoA.get("complTipoServico").value("  ");
-		segmentoA.get("finalidadePagamento").value("CC");
-
 		// regra bradesco: posicao 155 data real da efetivacao do pagto deve ser 00000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
 		segmentoA.get("dataRealEfetivacaoPagto").filler(Fillers.ZERO_LEFT).value("00000000");
 

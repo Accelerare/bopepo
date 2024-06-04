@@ -15,6 +15,8 @@
  */
 package com.github.braully.boleto;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jrimum.texgit.Fillers;
@@ -45,6 +47,10 @@ public class RemessaFacade extends ArquivoFacade {
 		return this.template.isExigeNumeroDocumento();
 	}
 
+    public boolean isCodigoFinalidadeEmBrancoSeCreditoEmConta() {
+		return this.template.isCodigoFinalidadeEmBrancoSeCreditoEmConta();
+	}
+
     public boolean isExigeCPFCNPJFavorecidoNoSegmentoA() {
 		return this.template.isExigeCPFCNPJFavorecidoNoSegmentoA();
 	}
@@ -62,11 +68,12 @@ public class RemessaFacade extends ArquivoFacade {
     public CabecalhoArquivo addNovoCabecalhoLote() {
         CabecalhoArquivo cabecalho = novoCabecalho("cabecalhoLote");
         this.add(cabecalho);
+        quantidadeSegmentoA = 0;
         return cabecalho;
     }
 
     public CabecalhoArquivo novoCabecalho(String tipoCabecalho) {
-        CabecalhoArquivo cabecalho = new CabecalhoArquivo(template.get(tipoCabecalho));
+        CabecalhoArquivo cabecalho = new CabecalhoArquivo(template.get(tipoCabecalho), this);
         return cabecalho;
     }
 
@@ -80,13 +87,17 @@ public class RemessaFacade extends ArquivoFacade {
         TituloArquivo titulo = this.novoTitulo("detalheSegmento" + segmento);
 
 
-        if (this.isExigeNumeroDocumento() && segmento.equals("A")) {
-            this.quantidadeSegmentoA++;
-            titulo.getField("numeroDocumento").setFiller(Fillers.WHITE_SPACE_RIGHT);
+        if (segmento.equals("A")) {
 
-            titulo.setValue("numeroDocumento", quantidadeSegmentoA);
+            if (this.isExigeNumeroDocumento()) {
+                this.quantidadeSegmentoA++;
+                titulo.getField("numeroDocumento").setFiller(Fillers.WHITE_SPACE_RIGHT);
+                titulo.setValue("numeroDocumento", quantidadeSegmentoA);
+            } else {
+                titulo.setValue("numeroDocumento", "");
+            }
         }
-        
+
         this.add(titulo);
         
         return titulo;
@@ -125,7 +136,7 @@ public class RemessaFacade extends ArquivoFacade {
     }
 
     public TituloArquivo novoTitulo(String tipoTitulo) {
-        TituloArquivo titulo = new TituloArquivo(template.get(tipoTitulo));
+        TituloArquivo titulo = new TituloArquivo(template.get(tipoTitulo), this);
         return titulo;
     }
 

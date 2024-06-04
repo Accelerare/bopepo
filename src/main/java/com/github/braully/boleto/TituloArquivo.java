@@ -40,6 +40,7 @@ import static com.github.braully.boleto.TagLayout.TagCreator.fvalorLiquido;
 import static com.github.braully.boleto.TagLayout.TagCreator.fvalorOcorrencia;
 import static com.github.braully.boleto.TagLayout.TagCreator.fvalorPagamento;
 import static com.github.braully.boleto.TagLayout.TagCreator.fvalorTarifaCustas;
+import static com.github.braully.boleto.TagLayout.TagCreator.titulo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -54,6 +55,15 @@ import org.jrimum.texgit.FixedField;
  * @author braully
  */
 public class TituloArquivo extends RegistroArquivo {
+
+	//para que seja possivel acessar a remessa a que este cabeçalho pertence
+	private RemessaFacade remessaReferencia;
+
+	public TituloArquivo(TagLayout get, RemessaFacade remessaReferencia) {
+		super(get);
+		this.remessaReferencia = remessaReferencia;
+	}
+	
 
 	public TituloArquivo(TagLayout get) {
 		super(get);
@@ -135,7 +145,24 @@ public class TituloArquivo extends RegistroArquivo {
 
 		}
 
+		//regra de alguns bancos Ex: Bradesco 
 
+
+		if (this.remessaReferencia != null && remessaReferencia.isCodigoFinalidadeEmBrancoSeCreditoEmConta())
+		{
+			if (Objects.equals(formaDeTransferencia,"000")) {
+				//neste caso precisa zerar os campos codFinalidadeDaTED e finalidadePagamento
+				this.setValue("complTipoServico", "  ");
+				this.setValue("codigoFinalidadeDaTED", "     ");
+			}
+
+			if (Objects.equals(formaDeTransferencia,"018")) {
+				//neste caso precisa zerar os campos codFinalidadeDaTED e finalidadePagamento
+				this.setValue("complTipoServico", "  ");
+				this.setValue("finalidadePagamento", "CC");
+			}
+		} 
+		
 		return (TituloArquivo) setValue(formaDeTransferencia);
 	}
 
@@ -186,6 +213,8 @@ public class TituloArquivo extends RegistroArquivo {
 		if (favorecidoConta == null) {
 			return this;
 		}
+
+		
 
 		if (Objects.equals(this.bancoCodigo(),"341" )) {
 			//regra itau: não preencher codigo verificador, deixar em branco

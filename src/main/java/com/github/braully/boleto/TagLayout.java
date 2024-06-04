@@ -74,7 +74,7 @@ public class TagLayout implements Serializable {
 		
 			String tagUrl = getTagUrl();
 		
-			if (tagUrl != null && (tagUrl.contains("www.bb.com.br") || tagUrl.contains("itau.com.br"))) {
+			if (tagUrl != null && (tagUrl.contains("www.bb.com.br") || tagUrl.contains("itau.com.br") || tagUrl.contains("bradesco"))) {
 				return false;
 			}
 
@@ -1478,4 +1478,17 @@ public class TagLayout implements Serializable {
 	public String toString() {
 		return "Tag{" + nome + "=" + value + " filhos=" + filhos + '}';
 	}
+
+    public boolean isCodigoFinalidadeEmBrancoSeCreditoEmConta() {
+		String urlBanco = getUrlBanco();
+
+		if (urlBanco != null) {
+
+			//bradesco
+			if (urlBanco.contains("bradesco")) {
+				return true;
+			}
+		}
+		return false;
+    }
 }

@@ -30,6 +30,14 @@ import java.util.Objects;
 /* Reune atributos recorrentes nos registros do tipo cabecalho */
 public class CabecalhoArquivo extends RegistroArquivo {
 
+    //para que seja possivel acessar a remessa a que este cabeçalho pertence
+    private RemessaFacade remessaReferencia;
+
+    public CabecalhoArquivo(TagLayout get, RemessaFacade remessaReferencia) {
+        super(get);
+        this.remessaReferencia = remessaReferencia;
+    }
+
     public CabecalhoArquivo(TagLayout get) {
         super(get);
     }
@@ -106,7 +114,6 @@ public class CabecalhoArquivo extends RegistroArquivo {
                 op = 41;
             }
         }
-
 
         setValue(fforma().nome, op);
         return this;
