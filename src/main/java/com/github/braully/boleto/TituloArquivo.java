@@ -15,6 +15,7 @@
  */
 package com.github.braully.boleto;
 
+import static com.github.braully.boleto.TagLayout.TagCreator.favorecidoTipoInscricao;
 import static com.github.braully.boleto.TagLayout.TagCreator.fbairro;
 import static com.github.braully.boleto.TagLayout.TagCreator.fcep;
 import static com.github.braully.boleto.TagLayout.TagCreator.fcidade;
@@ -238,6 +239,11 @@ public class TituloArquivo extends RegistroArquivo {
 
 	public TituloArquivo favorecidoNome(Object favorecidoNome) {
 		return (TituloArquivo) setValue(favorecidoNome);
+	}
+
+	public TituloArquivo tipoChavePIX(Object tipoChavePIX) {
+
+		return (TituloArquivo) setValue(tipoChavePIX);
 	}
 
 

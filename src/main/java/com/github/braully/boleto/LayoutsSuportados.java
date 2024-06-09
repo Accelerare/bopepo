@@ -995,9 +995,6 @@ public class LayoutsSuportados {
 		// regra itau: posicao 173 numero do endereco precisa ser numero com 0 à esq
 		cabecalhoLote.get("numero").padding(Fillers.ZERO_LEFT).value("00000000000000000000");
 		
-
-
-
 		
 		// SegmentoA
 		TagLayout segmentoA = _LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
@@ -1289,6 +1286,94 @@ public class LayoutsSuportados {
 
 	}
 
+	private static final TagLayout _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_FEBRABAN_CNAB240_PAGAMENTO_REMESSA.clone();
+
+	static {
+		// personalizações Sicoob  - > foi criado a partir do bradesco e todas as regras foram puxadas de lá
+
+		String codigoSicoob = "756";
+		String campoBancoNome = "bancoNome";
+		String campoBancoCodigo = "bancoCodigo";
+
+		// Layout
+		TagLayout layout = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA.get(layout());
+		layout.get("nome").value("Layout Padrão Sicoob CNAB240 Pagamento Remessa");
+		layout.get("banco").value(codigoSicoob);
+		layout.get("url").withValue(
+				"https://www.sicoob.com.br/documents/3068856/0/layout-cnab-240.xls/5bfadf52-4278-3d28-0b69-b09b467aad45?t=1614120550911");
+		layout.get("versao").value("81");
+
+		// Cabeçalho
+		TagLayout cabecalho = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA.get(cabecalho());
+		cabecalho.get(campoBancoNome).value("SICOOB");
+		cabecalho.get(campoBancoCodigo).value(codigoSicoob);
+		cabecalho.get("versaoLayoutArquivo").value("081");
+		
+		/*
+		* o bradesco utiliza apenas 6 chars para o codigo do convenio.. preencher à esquerda e deixar espaco em branco a direita 
+		*/
+		cabecalho.get("convenio").padding(Fillers.WHITE_SPACE_RIGHT);
+
+		// cabecalhoLote
+		TagLayout cabecalhoLote = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA.get(cabecalhoLote());
+		cabecalhoLote.get(campoBancoCodigo).value(codigoSicoob);
+		cabecalhoLote.get("versaoLayoutLote").value("044");
+		cabecalhoLote.get("convenio").padding(Fillers.WHITE_SPACE_RIGHT);
+	
+		
+		//REMOVENDO - A forma de pagamento atual (filho indice 22) E incluindo com valor 01
+		cabecalhoLote.filhos.remove(22);		
+		TagLayout cabecalhoLoteUF = cabecalhoLote.get("uf");
+		cabecalhoLote.insertAfter(cabecalhoLoteUF, field("formaPagamento").value("01").length(2), fbranco().length(16));
+
+		// SegmentoA
+		TagLayout segmentoA = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoA());
+		segmentoA.get(campoBancoCodigo).value(codigoSicoob);
+
+		// regra bradesco: posicao 155 data real da efetivacao do pagto deve ser 00000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
+		segmentoA.get("dataRealEfetivacaoPagto").filler(Fillers.ZERO_LEFT).value("00000000");
+
+		// regra bradesco: posicao 163 Valor Real da Efetivação do Pagto deve ser 000000000000000 no envio.. ela é preenchida pelo itau no arquivo de retorno
+		segmentoA.get("valorRealEfetivacaoPagto").filler(Fillers.ZERO_LEFT).value("000000000000000");
+
+		
+
+		// SegmentoB
+		TagLayout segmentoB = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA.get(detalheSegmentoB());
+		segmentoB.get(campoBancoCodigo).value(codigoSicoob);
+
+		
+		//regra bradesco: posicao 63 -> cep do endereço não pode ser em branco... mudar pra 00000000
+		segmentoB.filhos.remove(9); //endereco no template ele tem 95 chars, mas precisamos desmembrar em 30-5-50-8-2 chars para preencher 00000000 no campo de 8 chars
+		segmentoB.insertAfter(segmentoB.get("favorecidoCPFCNPJ"), field("endereco").length(30).padding(Fillers.WHITE_SPACE_RIGHT).value("                              "));
+		segmentoB.insertAfter(segmentoB.get("endereco"), field("numero").length(5).padding(Fillers.WHITE_SPACE_RIGHT).value("     "));
+		segmentoB.insertAfter(segmentoB.get("numero"), field("complementoBairroCidade").length(50).padding(Fillers.WHITE_SPACE_RIGHT).value("                                                  "));
+		segmentoB.insertAfter(segmentoB.get("complementoBairroCidade"), field("cepEndereco").length(8).padding(Fillers.WHITE_SPACE_RIGHT).value("00000000"));
+		segmentoB.insertAfter(segmentoB.get("cepEndereco"), field("ufEndereco").length(2).padding(Fillers.WHITE_SPACE_RIGHT).value("  "));
+		
+		
+		//regra bradesco: posicao 226 (aviso ao favorecido) precisa ser preenchido com 0 = não emite aviso
+		segmentoB.filhos.get(20).nome("complemento1");
+		segmentoB.filhos.remove(21);
+		segmentoB.insertAfter(segmentoB.get("complemento1"), field("complemento2").value("0              ").length(15));
+		
+
+		// RodapeLote
+		TagLayout rodapeLote = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA.get(rodapeLote());
+		rodapeLote.get(campoBancoCodigo).value(codigoSicoob);
+
+		//regra bradesco 042 a 059 -> somatório de quantidade de moedas - informar zeros
+		//regra bradesco 060 a 065 -> número aviso de débito - informar zeros
+		rodapeLote.get("qtdeMoeda").value("000000000000000000");
+		rodapeLote.get("numeroAvisoDeDebito").value("000000").filler(Fillers.ZERO_LEFT);
+
+		// RodapeArquivo
+		TagLayout rodapeArquivo = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA.get(rodape());
+		rodapeArquivo.get(campoBancoCodigo).value(codigoSicoob);
+
+
+}
+
 	private static final TagLayout _LAYOUT_BB_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_FEBRABAN_CNAB240_PAGAMENTO_REMESSA
 			.clone();
 
@@ -1404,6 +1489,9 @@ public class LayoutsSuportados {
 			.cloneReadonly();
 
 	public static final TagLayout LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_BRADESCO_CNAB240_PAGAMENTO_REMESSA
+			.cloneReadonly();
+
+	public static final TagLayout LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA
 			.cloneReadonly();
 
 	public static final TagLayout LAYOUT_BB_CNAB240_PAGAMENTO_REMESSA = _LAYOUT_BB_CNAB240_PAGAMENTO_REMESSA
@@ -1564,6 +1652,8 @@ public class LayoutsSuportados {
 			return LayoutsSuportados.LAYOUT_ITAU_CNAB240_PAGAMENTO_REMESSA;
 		case "748":
 			return LayoutsSuportados.LAYOUT_SICREDI_CNAB240_PAGAMENTO_REMESSA;
+		case "756":
+			return LayoutsSuportados.LAYOUT_SICOOB_CNAB240_PAGAMENTO_REMESSA;
 		default:
 			return LayoutsSuportados._LAYOUT_FEBRABAN_CNAB240_PAGAMENTO_REMESSA;
 		}
