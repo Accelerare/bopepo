@@ -104,7 +104,7 @@ public class RegistroArquivo extends Record {
     public RegistroArquivo convenio(String codigoBanco, String convenio, String agencia, String conta, String dac) {
 
         //o DAC da conta cedente, que é a posição 72 do header do arquivo e header do lote
-        //o itau é o unico que funciona diferente do resto...
+        //o itau tem uma regra diferente do resto...
 
         //normalmente é AGENCIA-DIGITO CONTA-DIGITO espaço e razao social do cedente
         //o itau é AGENCIA-DIGITO CONTA-SEM_DIGITO ESPACO e aí sim na posicao 72 o DIGITO DA AGENCIA
@@ -122,6 +122,15 @@ public class RegistroArquivo extends Record {
             agencia = StringUtils.left(agencia, agencia.length() - 1) + " ";
         }
 
+        //OBS3: o banco sicoob exige que não seja fornecido o digito da agencia e que seja deixado em branco.
+        if (Objects.equals(codigoBanco,"756")) {
+            //substitui o ultimo char da agencia por espaco em branco caso ela tenha length 5
+            if (agencia.length() == 5) {
+                agencia = StringUtils.left(agencia, agencia.length() - 1) + " ";
+                //agora o dac (posicao 72) precisa ser alterado para 0 ao inves de espaço em branco
+                dac = "0";
+            }
+        }
 
         this.convenio(convenio)
         .agencia(agencia)
@@ -131,10 +140,10 @@ public class RegistroArquivo extends Record {
     }
 
     public RegistroArquivo convenio(String codigoBanco, String convenio, String carteira, String agencia, String conta, String dac) {
-      
-      
+
+
         //o DAC da conta cedente, que é a posição 72 do header do arquivo e header do lote
-        //o itau é o unico que funciona diferente do resto...
+        //o itau tem uma regra diferente do resto...
 
         //normalmente é AGENCIA-DIGITO CONTA-DIGITO espaço e razao social do cedente
         //o itau é AGENCIA-DIGITO CONTA-SEM_DIGITO ESPACO e aí sim na posicao 72 o DIGITO DA AGENCIA
@@ -147,6 +156,16 @@ public class RegistroArquivo extends Record {
 
             dac = StringUtils.right(conta, 1);
             conta = StringUtils.left(conta, conta.length() - 1) + " ";
+        }
+
+        //OBS3: o banco sicoob exige que não seja fornecido o digito da agencia e que seja deixado em branco.
+        if (Objects.equals(codigoBanco,"756")) {
+            //substitui o ultimo char da agencia por espaco em branco caso ela tenha length 5
+            if (agencia.length() == 5) {
+                agencia = StringUtils.left(agencia, agencia.length() - 1) + " ";
+                //agora o dac (posicao 72) precisa ser alterado para 0 ao inves de espaço em branco
+                dac = "0";
+            }
         }
 
 

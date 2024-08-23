@@ -183,6 +183,14 @@ public class TituloArquivo extends RegistroArquivo {
 
     	}
 
+		//INCLUIR REGRA SICOOB
+		if (Objects.equals(this.bancoCodigo(),"756" )) {
+			//regra sicoob: não preencher codigo verificador, deixar em branco
+
+			favorecidoAgencia = StringUtils.truncate(favorecidoAgencia, 0, 4);
+			favorecidoAgencia += " ";
+		}
+
     	if (favorecidoAgencia.length() == 4) {
     		//caso o usuario não tenha informado o digito verificador, assumir que é 0
     		favorecidoAgencia = favorecidoAgencia + "0";
