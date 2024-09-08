@@ -15,16 +15,11 @@
  */
 package com.github.braully.boleto;
 
-import static com.github.braully.boleto.TagLayout.TagCreator.fforma;
-import static com.github.braully.boleto.TagLayout.TagCreator.fnumeroRemessa;
-import static com.github.braully.boleto.TagLayout.TagCreator.foperacao;
-import static com.github.braully.boleto.TagLayout.TagCreator.fsequencialArquivo;
-import static com.github.braully.boleto.TagLayout.TagCreator.fservico;
+import static com.github.braully.boleto.TagLayout.TagCreator.*;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  *
@@ -110,7 +105,7 @@ public class CabecalhoArquivo extends RegistroArquivo {
 
     public CabecalhoArquivo forma(Object op) {
 
-        List<String>bancosAderentesARegra = Arrays.asList("341", "748");
+        List<String>bancosAderentesARegra = Arrays.asList("341", "748", "756");
         
         if (bancosAderentesARegra.contains(this.bancoCodigo()) ) {
             //regra itau e sicredi. só o itau exige que seja 41 para TED

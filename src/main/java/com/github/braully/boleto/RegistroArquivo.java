@@ -15,22 +15,14 @@
  */
 package com.github.braully.boleto;
 
-import static com.github.braully.boleto.TagLayout.TagCreator.fagencia;
-import static com.github.braully.boleto.TagLayout.TagCreator.fbancoCodigo;
-import static com.github.braully.boleto.TagLayout.TagCreator.fbancoNome;
-import static com.github.braully.boleto.TagLayout.TagCreator.fcedenteCnpj;
-import static com.github.braully.boleto.TagLayout.TagCreator.fcedenteNome;
-import static com.github.braully.boleto.TagLayout.TagCreator.fconta;
-import static com.github.braully.boleto.TagLayout.TagCreator.fconvenio;
-import static com.github.braully.boleto.TagLayout.TagCreator.fmovimentoCodigo;
-import static com.github.braully.boleto.TagLayout.TagCreator.fsequencialArquivo;
-import static com.github.braully.boleto.TagLayout.TagCreator.fsequencialRegistro;
+import static com.github.braully.boleto.TagLayout.TagCreator.*;
 
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jrimum.texgit.FixedField;
 import org.jrimum.texgit.IFiller;
@@ -124,6 +116,11 @@ public class RegistroArquivo extends Record {
 
         //OBS3: o banco sicoob exige que não seja fornecido o digito da agencia e que seja deixado em branco.
         if (Objects.equals(codigoBanco,"756")) {
+
+            //deixar apenas digitos na agencia e conta
+            agencia = RegExUtils.removeAll(agencia, "\\D");
+            conta = RegExUtils.removeAll(conta, "\\D");
+
             //substitui o ultimo char da agencia por espaco em branco caso ela tenha length 5
             if (agencia.length() == 5) {
                 agencia = StringUtils.left(agencia, agencia.length() - 1) + " ";
