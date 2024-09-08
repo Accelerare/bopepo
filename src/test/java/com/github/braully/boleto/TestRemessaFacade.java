@@ -15,26 +15,7 @@
  */
 package com.github.braully.boleto;
 
-import static com.github.braully.boleto.TagLayout.TagCreator.banco;
-import static com.github.braully.boleto.TagLayout.TagCreator.cabecalho;
-import static com.github.braully.boleto.TagLayout.TagCreator.cnab;
-import static com.github.braully.boleto.TagLayout.TagCreator.descricao;
-import static com.github.braully.boleto.TagLayout.TagCreator.fagencia;
-import static com.github.braully.boleto.TagLayout.TagCreator.fbranco;
-import static com.github.braully.boleto.TagLayout.TagCreator.fcodigoRegistro;
-import static com.github.braully.boleto.TagLayout.TagCreator.fcodigoRetorno;
-import static com.github.braully.boleto.TagLayout.TagCreator.fconta;
-import static com.github.braully.boleto.TagLayout.TagCreator.fdataGeracao;
-import static com.github.braully.boleto.TagLayout.TagCreator.flatfile;
-import static com.github.braully.boleto.TagLayout.TagCreator.fquantidadeRegistros;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalorTotalRegistros;
-import static com.github.braully.boleto.TagLayout.TagCreator.fzero;
-import static com.github.braully.boleto.TagLayout.TagCreator.layout;
-import static com.github.braully.boleto.TagLayout.TagCreator.nome;
-import static com.github.braully.boleto.TagLayout.TagCreator.rodape;
-import static com.github.braully.boleto.TagLayout.TagCreator.servico;
-import static com.github.braully.boleto.TagLayout.TagCreator.titulo;
-import static com.github.braully.boleto.TagLayout.TagCreator.versao;
+import static com.github.braully.boleto.TagLayout.TagCreator.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -1187,8 +1168,8 @@ public class TestRemessaFacade {
 		String numeroConvenio = "555";
 		
                 //testando preenchimento automatico do digito verificador como 0
-		String agenciaComDigito = "51228";
-		String contaComDigito = "140449";
+		String agenciaComDigito = "5122-8";
+		String contaComDigito = "14044-9";
 		String DAC = " ";
 		int sequencialLote = 1;
 		int sequencialRegistro = 1;
@@ -1200,6 +1181,10 @@ public class TestRemessaFacade {
 		.cedente(razaoSocial, cnpj)
 		.convenio(codigoBanco,numeroConvenio, agenciaComDigito, contaComDigito, DAC);
 
+
+                // .convenio(grupoGestorContaBancaria.getBanco().getCodigoFebraban(),
+                // grupoGestorContaBancaria.getConvenioBancario(), grupoGestorContaBancaria.getAgencia(),
+                // grupoGestorContaBancaria.getConta(), " ");
 
                 //vai ser 1 lote para transferencia no mesmo banco (transf mesmo banco), outro lote para outros bancos (TED)
 
@@ -1316,7 +1301,7 @@ public class TestRemessaFacade {
                 + "7560001300001A00000075601234 0000000012345 JOSE DA SILVA 1                                   " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000000582                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
                 + "7560001300002B   100011122233455                                                                                     00000000  " + getDataFormatada(dataHoraGeracao) + "000000000000582000000000000000000000000000000000000000000000000000000000000               0              " + FileUtil.NEW_LINE                                                                                                                                                                                        
                 + "75600015         000002000000000000000582000000000000582000000000                                                                                                                                                                               " + FileUtil.NEW_LINE
-                + "75600021C2003045 255975206000129555                 05122 00000001404490EMPRESA TESTE XYZ                                                     AV TESTE                      111                 SAO PAULO           01104010SP01                " + FileUtil.NEW_LINE
+                + "75600021C2041045 255975206000129555                 05122 00000001404490EMPRESA TESTE XYZ                                                     AV TESTE                      111                 SAO PAULO           01104010SP01                " + FileUtil.NEW_LINE
                 + "7560002300001A00001803301234 0000000012345 JOSE DA SILVA 2                                   " + getDataFormatada(dataHoraGeracao) + "BRL000000000000000000000000001000                    00000000000000000000000                                        0100010     0          " + FileUtil.NEW_LINE
                 + "7560002300002B   100011122233455                                                                                     00000000  " + getDataFormatada(dataHoraGeracao) + "000000000001000000000000000000000000000000000000000000000000000000000000000               0              " + FileUtil.NEW_LINE
                 + "75600025         000002000000000000001000000000000001000000000000                                                                                                                                                                               " + FileUtil.NEW_LINE
