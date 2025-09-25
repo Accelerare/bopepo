@@ -120,6 +120,9 @@ public final class Strings {
 			modifiedStr = replace(modifiedStr, "\"", EMPTY);
 			modifiedStr = replace(modifiedStr, "'", EMPTY);
 			modifiedStr = replace(modifiedStr, "`", EMPTY);
+
+			//char invisivel
+			modifiedStr = replace(modifiedStr, " ", EMPTY);
 		}
 
 		return modifiedStr;

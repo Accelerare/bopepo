@@ -15,41 +15,16 @@
  */
 package com.github.braully.boleto;
 
-import static com.github.braully.boleto.TagLayout.TagCreator.favorecidoTipoInscricao;
-import static com.github.braully.boleto.TagLayout.TagCreator.fbairro;
-import static com.github.braully.boleto.TagLayout.TagCreator.fcep;
-import static com.github.braully.boleto.TagLayout.TagCreator.fcidade;
-import static com.github.braully.boleto.TagLayout.TagCreator.fcodigoBarras;
-import static com.github.braully.boleto.TagLayout.TagCreator.fdataAcrescimo;
-import static com.github.braully.boleto.TagLayout.TagCreator.fdataDesconto;
-import static com.github.braully.boleto.TagLayout.TagCreator.fdataOcorrencia;
-import static com.github.braully.boleto.TagLayout.TagCreator.fdataPagamento;
-import static com.github.braully.boleto.TagLayout.TagCreator.fendereco;
-import static com.github.braully.boleto.TagLayout.TagCreator.fmovimentoCodigo;
-import static com.github.braully.boleto.TagLayout.TagCreator.fnossoNumero;
-import static com.github.braully.boleto.TagLayout.TagCreator.fnumeroDocumento;
-import static com.github.braully.boleto.TagLayout.TagCreator.focorrencias;
-import static com.github.braully.boleto.TagLayout.TagCreator.frejeicoes;
-import static com.github.braully.boleto.TagLayout.TagCreator.fsacadoCpf;
-import static com.github.braully.boleto.TagLayout.TagCreator.fsacadoNome;
-import static com.github.braully.boleto.TagLayout.TagCreator.fsegmento;
-import static com.github.braully.boleto.TagLayout.TagCreator.fuf;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalor;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalorAcrescimo;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalorDesconto;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalorLiquido;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalorOcorrencia;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalorPagamento;
-import static com.github.braully.boleto.TagLayout.TagCreator.fvalorTarifaCustas;
-import static com.github.braully.boleto.TagLayout.TagCreator.titulo;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
+import com.github.braully.pagamento.RetornoHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.jrimum.texgit.FixedField;
+import org.jrimum.utilix.StringUtil;
+
+import static com.github.braully.boleto.TagLayout.TagCreator.*;
 
 /**
  *
@@ -208,6 +183,11 @@ public class TituloArquivo extends RegistroArquivo {
 		return (TituloArquivo) setValue(tipoInsricao);
 	}
 
+	public String tipoInscricao() {
+
+		return getValue(ftipoInscricao().nome);
+	}
+
 	/**
      * Tipo de Inscrição: '0' = Isento / Não Informado '1' = CPF '2' = CGC /
      * CNPJ '3' = PIS / PASEP '9' = Outros
@@ -217,13 +197,13 @@ public class TituloArquivo extends RegistroArquivo {
 		return (TituloArquivo) setValue(favorecidoTipoInscricao);
 	}
 
+
+
 	public TituloArquivo favorecidoConta(Object favorecidoConta) {
 
 		if (favorecidoConta == null) {
 			return this;
 		}
-
-		
 
 		if (Objects.equals(this.bancoCodigo(),"341" )) {
 			//regra itau: não preencher codigo verificador, deixar em branco
@@ -260,6 +240,18 @@ public class TituloArquivo extends RegistroArquivo {
 		return (TituloArquivo) setValue(favorecidoInscricao);
 	}
 
+
+	public String favorecidoCPFCNPJ() {
+
+		String favorecidoCPFCNPJ = getValue(ffavorecidoCPFCNPJ().nome);
+
+		if (getValue("favorecidoTipoInscricao").equals("1")) {
+			favorecidoCPFCNPJ = StringUtils.right(favorecidoCPFCNPJ,11);
+		}
+
+		return favorecidoCPFCNPJ;
+	}
+
 	public String valorAcrescimo() {
 		return getValue(fvalorAcrescimo().nome);
 	}
@@ -289,7 +281,7 @@ public class TituloArquivo extends RegistroArquivo {
 	}
 
 	/**
-	 * @see com.​github.​braully.​boleto.​TagLayout.​TagCreator.fmovimentoCodigo()
+	 * @see com.github.braully.boleto.TagLayout.TagCreator fmovimentoCodigo()
 	 */
 	public TituloArquivo movimentoCodigo(Object string) {
 		return (TituloArquivo) setValue(fmovimentoCodigo().nome, string);
@@ -380,6 +372,50 @@ public class TituloArquivo extends RegistroArquivo {
 //    }
 	public String rejeicoes() {
 		return getValue(frejeicoes().nome);
+	}
+
+	public List<String> codigoRejeicoes() {
+
+		String rejeicoes = getValue("codigoDasOcorrenciasParaRetorno");
+		//fazer split a cada 2 chars
+
+		return Arrays.asList(StringUtil.splitByLength(rejeicoes, 2));
+
+	}
+
+	public List<String> codigoRejeicoesSignificados() {
+
+		List<String> rejeicoes = codigoRejeicoes();
+		List<String> rejeicoesTexto = new ArrayList<>();
+		ResourceBundle bundle = RetornoHelper.bundleCodigosRejeicao(this.bancoCodigo());
+		for (String codigo : rejeicoes) {
+
+			String significado;
+			if (bundle.containsKey(codigo)) {
+				significado = bundle.getString(codigo);
+			} else {
+				significado = "Código desconhecido: " + codigo;
+			}
+			rejeicoesTexto.add(significado);
+		}
+
+		// Add the translated messages to mapTitulo
+
+		return rejeicoesTexto;
+
+	}
+
+	public boolean isPagamentoEfetivado() {
+
+		List<String> codigosRejeicoes = codigoRejeicoes();
+
+		for (String codigoRejeicao : codigosRejeicoes) {
+			if (RetornoHelper.isPagamentoEfetivado(this.bancoCodigo(),codigoRejeicao)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public String valorTarifaCustas() {

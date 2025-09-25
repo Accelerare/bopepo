@@ -52,7 +52,7 @@ public class TestStrings {
 	@Test
 	public void testEliminateSymbols() {
 
-		assertEquals(EMPTY, Strings.eliminateSymbols("><,;.:!*&%+-_<>[]\\/"));
+		assertEquals(EMPTY, Strings.eliminateSymbols("><,;.:!*&%+-_<>[]\\/ "));
 	}
 
 	@Test

@@ -244,4 +244,30 @@ public class StringUtil {
 
         return modifiedValue;
     }
+
+
+    public static String[] splitByLength(String str, int length) {
+
+        //fazer split a cada [length] chars
+
+        if (str == null || str.isEmpty()) {
+            return new String[0];
+        }
+
+        str = str.trim();
+
+        int len = str.length();
+        int arraySize = (len + 1) / length; // Calculates the required array size
+        String[] result = new String[arraySize];
+
+        for (int i = 0; i < arraySize; i++) {
+            int start = i * length;
+            int end = Math.min(start + length, len);
+            result[i] = str.substring(start, end);
+        }
+
+        return result;
+
+    }
+
 }
